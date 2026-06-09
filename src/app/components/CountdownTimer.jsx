@@ -44,39 +44,22 @@ export function CountdownTimer() {
   return (
     <div className="flex flex-col items-center gap-2">
       {/* Micro-copy label */}
-      <div
-        className="text-[12px] tracking-[0.2em] uppercase font-medium text-center"
-        style={{ color: "rgba(255, 255, 255, 0.6)" }}
-      >
+      <div className="text-[12px] tracking-[0.2em] uppercase font-medium text-center text-white/60">
         STARTS IN
       </div>
       <div className="flex items-center justify-center gap-3">
       {units.map((unit, i) => (
         <div key={unit.label} className="flex items-center gap-3">
           <div className="flex flex-col items-center">
-            <div
-              className="font-orbitron text-[18px] font-bold leading-none"
-              style={{
-                color: "#FFFFFF",
-                fontVariantNumeric: "tabular-nums",
-                minWidth: "2ch",
-                textAlign: "center",
-              }}
-            >
+            <div className="font-orbitron text-[18px] font-bold leading-none text-white tabular-nums min-w-[2ch] text-center">
               {pad(unit.value)}
             </div>
-            <div
-              className="text-[8px] tracking-[0.1em] mt-[4px] uppercase font-medium"
-              style={{ color: "rgba(255, 255, 255, 0.5)" }}
-            >
+            <div className="text-[8px] tracking-[0.1em] mt-[4px] uppercase font-medium text-white/50">
               {unit.label}
             </div>
           </div>
           {i < units.length - 1 && (
-            <span
-              className="text-[14px] font-light leading-none mb-3"
-              style={{ color: "rgba(255, 255, 255, 0.2)" }}
-            >
+            <span className="text-[14px] font-light leading-none mb-3 text-white/20">
               :
             </span>
           )}

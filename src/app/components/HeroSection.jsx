@@ -110,74 +110,29 @@ const portalVariants = {
   },
 };
 
-const staggerContainer = {
-  hidden: { opacity: 1 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.25,
-      delayChildren: 0.5,
-    },
-  },
+const animCSI = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 0.2, ease: BUTTERY_EASE } },
 };
-
-const slideFromRight = {
-  hidden: { opacity: 0, x: 20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: PHASE3_DURATION,
-      ease: BUTTERY_EASE,
-    },
-  },
+const animTitle = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 0.4, ease: BUTTERY_EASE } },
 };
-
-const slideUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: PHASE3_DURATION,
-      ease: BUTTERY_EASE,
-    },
-  },
-};
-
-const scaleUp = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: PHASE3_DURATION,
-      ease: BUTTERY_EASE,
-    },
-  },
-};
-
-const fadeIn = {
+const animYear = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: PHASE3_DURATION,
-      ease: BUTTERY_EASE,
-    },
-  },
+  visible: { opacity: 1, transition: { duration: 1.0, delay: 0.6, ease: BUTTERY_EASE } },
 };
-
-const dividerLineVariant = {
+const animLine = {
   hidden: { opacity: 0, scaleX: 0 },
-  visible: {
-    opacity: 1,
-    scaleX: 1,
-    transition: {
-      duration: PHASE3_DURATION,
-      ease: BUTTERY_EASE,
-    },
-  },
+  visible: { opacity: 1, scaleX: 1, transition: { duration: 1.0, delay: 0.6, ease: BUTTERY_EASE } },
+};
+const animBlock = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 1.0, ease: BUTTERY_EASE } },
+};
+const animBtn = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 1.5, ease: BUTTERY_EASE } },
 };
 
 /* ═══════════════════════════════════════════════════════════
@@ -187,20 +142,20 @@ export function HeroSection() {
   const [entranceComplete, setEntranceComplete] = useState(false);
 
   return (
-    <div className="relative z-10 flex flex-col lg:flex-row lg:justify-between items-center lg:items-start px-5 pt-4 md:pt-8 lg:pt-6 pb-12 lg:pb-24 w-full max-w-[1400px] mx-auto min-h-[calc(100dvh-80px)] lg:min-h-0">
+    <div className="relative z-10 flex flex-col w-full max-w-[1400px] mx-auto px-5 pt-4 md:pt-8 lg:pt-6 pb-8 lg:pb-6 min-h-[calc(100dvh-80px)] lg:min-h-0">
+      <div className="flex flex-col lg:flex-row lg:justify-between items-center lg:items-start w-full">
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           LEFT COLUMN — Phase 2: Staggered Content Reveal
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <motion.div
         className="contents lg:flex lg:flex-col lg:items-center lg:w-[40%] lg:max-w-[560px] text-center lg:pl-12"
-        variants={staggerContainer}
         initial="hidden"
         animate="visible"
         onAnimationComplete={() => setEntranceComplete(true)}
       >
         <motion.div
           className="order-1 flex justify-center items-center gap-1 mb-3 w-full text-[10px] text-[#C8D3F5]"
-          variants={slideFromRight}
+          variants={animCSI}
         >
           <div className="w-[12px] h-[12px] rounded-full border border-[#3FE0FF] shrink-0 shadow-[0_0_4px_rgba(63,224,255,0.4)] bg-badge-gradient" />
           <span className="whitespace-nowrap font-semibold tracking-[0.02em] text-[clamp(10px,2vw,12px)]">
@@ -210,33 +165,32 @@ export function HeroSection() {
 
         <motion.h1
           className={`order-2 font-orbitron text-[clamp(38px,7vw,65px)] font-black text-[#F8FAFC] tracking-[0.06em] text-glow m-0 leading-[1.05] ${entranceComplete ? "animate-title-glow" : ""}`}
-          variants={slideFromRight}
+          variants={animTitle}
         >
           FLASHFORTE
         </motion.h1>
 
         <motion.div
-          className="order-3 flex justify-center items-center gap-[clamp(8px,2vw,16px)] w-full font-orbitron text-[clamp(26px,5vw,48px)] font-black tracking-[0.12em] mt-0 mb-4"
-          variants={fadeIn}
+          className="order-3 flex justify-center items-center gap-[clamp(8px,2vw,16px)] w-full font-orbitron text-[clamp(26px,5vw,48px)] font-black tracking-[0.12em] mt-0 mb-2 lg:mb-0"
         >
           <div className="flex items-center gap-[6px]">
-            <motion.div className="divider-line-left" variants={dividerLineVariant} />
-            <motion.div className="divider-circle-left" variants={fadeIn} />
+            <motion.div className="divider-line-left" variants={animLine} />
+            <motion.div className="divider-circle-left" variants={animYear} />
           </div>
 
-          <motion.span variants={fadeIn} className="text-2k26-gradient">
+          <motion.span variants={animYear} className="text-2k26-gradient">
             2K26
           </motion.span>
 
           <div className="flex items-center gap-[6px]">
-            <motion.div className="divider-circle-right" variants={fadeIn} />
-            <motion.div className="divider-line-right" variants={dividerLineVariant} />
+            <motion.div className="divider-circle-right" variants={animYear} />
+            <motion.div className="divider-line-right" variants={animLine} />
           </div>
         </motion.div>
 
         <motion.p
-          className="order-5 w-full mt-4 mb-2 lg:mt-6 lg:mb-4 text-[#FFFFFF] text-[clamp(20px,4vw,32px)] font-extrabold leading-[1.3] tracking-[0.01em]"
-          variants={slideUp}
+          className="order-5 w-full mt-4 mb-2 lg:mt-16 lg:mb-8 text-[#FFFFFF] text-[clamp(20px,4vw,32px)] font-extrabold leading-[1.3] tracking-[0.01em]"
+          variants={animBlock}
         >
           One Event.{" "}
           <span className="bg-gradient-to-r from-[#8F6BFF] to-[#3FE0FF] bg-clip-text text-transparent [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
@@ -245,8 +199,8 @@ export function HeroSection() {
         </motion.p>
 
         <motion.p
-          className="order-6 w-full mx-auto mb-6 lg:mb-8 text-[#C8D3F5] text-[clamp(14px,2vw,17px)] leading-[1.6] max-w-[480px]"
-          variants={slideUp}
+          className="order-6 w-full mx-auto mb-8 lg:mb-16 text-[#C8D3F5] text-[clamp(14px,2vw,17px)] leading-[1.6] max-w-[480px]"
+          variants={animBlock}
         >
           Step into a universe of ideas, innovation,
           <br />
@@ -256,8 +210,8 @@ export function HeroSection() {
         </motion.p>
 
         <motion.div
-          className="order-7 flex justify-center w-full mb-6 lg:mb-8"
-          variants={scaleUp}
+          className="order-7 flex justify-center w-full mb-8 lg:mb-8"
+          variants={animBtn}
         >
           <Link
             to="/registration-test"
@@ -267,63 +221,72 @@ export function HeroSection() {
             <span>→</span>
           </Link>
         </motion.div>
-
-        <motion.div
-          className="order-8 flex w-full mx-auto lg:max-w-md justify-center mt-2"
-          variants={scaleUp}
-        >
-          {/* Unified Date/Venue + Timer Container */}
-          <div
-            className={`flex flex-col items-center gap-5 ${entranceComplete ? "animate-card-levitate" : ""}`}
-            style={{
-              background: "rgba(10, 10, 15, 0.4)",
-              backdropFilter: "blur(16px)",
-              WebkitBackdropFilter: "blur(16px)",
-              borderRadius: "24px",
-              border: "1px solid rgba(255, 255, 255, 0.05)",
-              boxShadow: "0 4px 24px rgba(63, 224, 255, 0.08), 0 0 40px rgba(143, 107, 255, 0.04)",
-              padding: "2rem 3rem",
-            }}
-          >
-            {/* Date & Venue Ribbon */}
-            <div className="inline-flex items-center gap-4">
-              {/* Left: Date */}
-              <div className="flex items-center gap-2">
-                <Calendar size={15} color="#8F6BFF" className="shrink-0" />
-                <span className="text-[#FFFFFF] text-[13px] font-medium whitespace-nowrap tracking-[0.01em]">
-                  June 26 – 27, 2026
-                </span>
-              </div>
-
-              {/* Center Divider */}
-              <div className="w-[1px] h-[18px] shrink-0" style={{ background: "rgba(255, 255, 255, 0.15)" }} />
-
-              {/* Right: Venue */}
-              <div className="flex items-center gap-2">
-                <Wifi size={14} color="#3FE0FF" className="shrink-0" />
-                <span className="text-[#FFFFFF] text-[13px] font-medium whitespace-nowrap tracking-[0.01em]">
-                  Online
-                </span>
-              </div>
-            </div>
-
-            {/* Countdown Timer */}
-            <CountdownTimer />
-          </div>
-        </motion.div>
       </motion.div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           RIGHT COLUMN — Phase 1: Portal Fade-In
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <motion.div
-        className="order-4 lg:order-none lg:w-[55%] flex justify-center lg:justify-end -mt-2 -mb-2 lg:-mt-16 lg:mb-0 w-full relative lg:translate-x-12 lg:-translate-y-8"
+        className="order-4 lg:order-none lg:w-[55%] flex justify-center lg:justify-end -mt-2 -mb-2 lg:-mt-16 lg:mb-0 w-full relative lg:translate-x-12 lg:-translate-y-8 will-change-opacity"
         variants={portalVariants}
         initial="hidden"
         animate="visible"
-        style={{ willChange: "opacity" }}
       >
-        <PortalVideo className="w-[115%] lg:w-[130%]" />
+        <PortalVideo className="w-[110%] lg:w-[120%]" />
+      </motion.div>
+      </div>
+
+      <motion.div
+        className="flex w-full mx-auto justify-center mt-6 lg:mt-6 z-20"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {/* Unified Date/Venue + Timer Container */}
+        <div
+          className={`glass-timer-card flex flex-col items-center gap-4 lg:gap-8 px-8 py-5 lg:px-16 lg:py-8 ${entranceComplete ? "animate-card-levitate" : ""}`}
+        >
+          {/* Date & Venue Ribbon */}
+          <div className="flex items-center gap-2 sm:gap-5 lg:gap-10">
+            {/* Left: Date */}
+            <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
+              <div className="flex flex-col text-right">
+                <span className="text-[#FFFFFF] text-[12px] sm:text-[14px] lg:text-[18px] font-semibold whitespace-nowrap tracking-[0.02em] leading-tight">
+                  June 26 – 27, 2026
+                </span>
+                <span className="text-[#8F6BFF] text-[9px] sm:text-[11px] lg:text-[13px] font-semibold uppercase whitespace-nowrap tracking-[0.06em] leading-tight mt-[4px]">
+                  Friday & Saturday
+                </span>
+              </div>
+              <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 lg:w-12 lg:h-12 rounded-full bg-[#8F6BFF]/10 border border-[#8F6BFF]/30 shrink-0">
+                <Calendar size={12} className="sm:w-[14px] sm:h-[14px] lg:w-[18px] lg:h-[18px]" color="#8F6BFF" />
+              </div>
+            </div>
+
+            {/* Center Divider */}
+            <div className="w-[1px] h-[32px] lg:h-[48px] shrink-0 bg-white/15" />
+
+            {/* Right: Venue */}
+            <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
+              <div className="flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 lg:w-12 lg:h-12 rounded-full bg-[#3FE0FF]/10 border border-[#3FE0FF]/30 shrink-0">
+                <Wifi size={12} className="sm:w-[14px] sm:h-[14px] lg:w-[18px] lg:h-[18px]" color="#3FE0FF" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-[#FFFFFF] text-[12px] sm:text-[14px] lg:text-[18px] font-semibold whitespace-nowrap tracking-[0.02em] leading-tight">
+                  Online
+                </span>
+                <span className="text-[#3FE0FF] text-[9px] sm:text-[11px] lg:text-[13px] font-semibold uppercase whitespace-nowrap tracking-[0.06em] leading-tight mt-[4px]">
+                  Virtual Event
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Countdown Timer */}
+          <div className="mt-1 lg:mt-3 lg:scale-125 lg:mb-2 transform origin-top">
+            <CountdownTimer />
+          </div>
+        </div>
       </motion.div>
     </div>
   );

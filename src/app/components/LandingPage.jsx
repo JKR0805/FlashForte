@@ -8,7 +8,7 @@ import { Footer } from "./Footer.jsx";
 
 export function LandingPage() {
   return (
-    <div className="relative w-full max-w-[100vw] overflow-x-hidden flex flex-col font-inter bg-[#050816]">
+    <div className="relative w-full overflow-x-hidden flex flex-col font-inter bg-[#050816]">
       {/* 
         Fixed backgrounds for continuous journey 
         Moving the radial gradient and starfield here to cover the whole page.

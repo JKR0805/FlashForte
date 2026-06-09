@@ -1,21 +1,21 @@
 import { motion } from "framer-motion";
-import { Clock } from "lucide-react";
+import { Clock, Mic, Gamepad2, Palette, Lightbulb } from "lucide-react";
 
 const SCHEDULE_DATA = [
   {
     day: "Day 1",
     date: "June 26",
     events: [
-      { name: "Speak-A-Thon", time: "9:00 AM - 1:00 PM", icon: "🎤" },
-      { name: "Game-A-Thon", time: "2:00 PM - 5:00 PM", icon: "🎮" },
+      { name: "Speak-A-Thon", time: "9:00 AM - 1:00 PM", icon: Mic, color: "#F97316" },
+      { name: "Game-A-Thon", time: "2:00 PM - 5:00 PM", icon: Gamepad2, color: "#A855F7" },
     ],
   },
   {
     day: "Day 2",
     date: "June 27",
     events: [
-      { name: "Design-A-Thon", time: "9:00 AM - 1:00 PM", icon: "🎨" },
-      { name: "IdeaThon", time: "2:00 PM - 5:00 PM", icon: "💡" },
+      { name: "Design-A-Thon", time: "9:00 AM - 1:00 PM", icon: Palette, color: "#22C55E" },
+      { name: "IdeaThon", time: "2:00 PM - 5:00 PM", icon: Lightbulb, color: "#EAB308" },
     ],
   },
 ];
@@ -73,7 +73,7 @@ export function ScheduleCards() {
         {SCHEDULE_DATA.map((day) => (
           <motion.div
             key={day.day}
-            className="schedule-card flex-1 glass-card rounded-[20px] p-0 overflow-hidden cursor-default"
+            className="glass-card flex-1 w-full shrink-0 flex flex-col overflow-hidden rounded-[20px] border border-[#8F6BFF]/20"
             variants={cardVariants}
             whileHover={{
               y: -6,
@@ -84,11 +84,10 @@ export function ScheduleCards() {
           >
             {/* Card header */}
             <div
-              className="px-6 py-5"
+              className="px-6 py-5 border-b border-[#8F6BFF]/15"
               style={{
                 background:
                   "linear-gradient(135deg, rgba(143, 107, 255, 0.15) 0%, rgba(63, 224, 255, 0.08) 100%)",
-                borderBottom: "1px solid rgba(143, 107, 255, 0.15)",
               }}
             >
               <div className="flex items-center justify-between">
@@ -99,11 +98,7 @@ export function ScheduleCards() {
                   <span className="text-[#C8D3F5] text-[13px] mt-1 block">{day.date}</span>
                 </div>
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                  style={{
-                    background: "rgba(143, 107, 255, 0.15)",
-                    border: "1px solid rgba(143, 107, 255, 0.3)",
-                  }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-[#8F6BFF]/15 border border-[#8F6BFF]/30"
                 >
                   <Clock size={18} color="#8F6BFF" />
                 </div>
@@ -112,22 +107,21 @@ export function ScheduleCards() {
 
             {/* Events list */}
             <div className="px-6 py-5 flex flex-col gap-4">
-              {day.events.map((event, idx) => (
+              {day.events.map((event, idx) => {
+                const Icon = event.icon;
+                return (
                 <div
                   key={event.name}
                   className="flex items-start gap-3 group"
                 >
                   <div
-                    className="text-[20px] w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0"
+                    className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0"
                     style={{
-                      background:
-                        idx === 0
-                          ? "rgba(143, 107, 255, 0.1)"
-                          : "rgba(63, 224, 255, 0.1)",
-                      border: `1px solid ${idx === 0 ? "rgba(143, 107, 255, 0.2)" : "rgba(63, 224, 255, 0.2)"}`,
+                      background: `${event.color}15`,
+                      border: `1px solid ${event.color}40`,
                     }}
                   >
-                    {event.icon}
+                    <Icon size={20} color={event.color} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[#F8FAFC] text-[15px] font-semibold leading-tight">
@@ -136,14 +130,15 @@ export function ScheduleCards() {
                     <div
                       className="text-[13px] mt-[3px] font-medium"
                       style={{
-                        color: idx === 0 ? "#A678FF" : "#3FE0FF",
+                        color: event.color,
                       }}
                     >
                       {event.time}
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         ))}

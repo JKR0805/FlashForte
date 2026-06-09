@@ -116,14 +116,12 @@ function MobileImageGallery({ activeEvent }) {
   };
 
   return (
-    <div className="mb-10 -mx-6" style={{ perspective: "1000px" }}>
+    <div className="mb-10 -mx-6 perspective-1000">
       <div 
         ref={carouselRef}
         onScroll={handleScroll}
         className="flex gap-4 overflow-x-auto hide-scrollbar snap-x snap-mandatory py-4"
         style={{
-          scrollbarWidth: "none", 
-          msOverflowStyle: "none",
           paddingLeft: "calc(50vw - 120px)",
           paddingRight: "calc(50vw - 120px)"
         }}
@@ -132,7 +130,7 @@ function MobileImageGallery({ activeEvent }) {
           const distance = index - activeImgIndex;
           const rotateY = distance === 0 ? 0 : distance > 0 ? -25 : 25;
           const scale = distance === 0 ? 1 : 0.85;
-          const opacity = distance === 0 ? 1 : 0.4;
+          const opacity = distance === 0 ? 1 : 0.7;
           const zIndex = distance === 0 ? 10 : 0;
 
           return (
@@ -140,8 +138,7 @@ function MobileImageGallery({ activeEvent }) {
               key={index}
               animate={{ rotateY, scale, opacity, zIndex }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="gallery-carousel-item snap-center shrink-0 w-[240px] aspect-video rounded-xl overflow-hidden relative bg-white/5 border border-white/10 group"
-              style={{ transformStyle: "preserve-3d" }}
+              className="gallery-carousel-item snap-center shrink-0 w-[240px] aspect-video rounded-xl overflow-hidden relative bg-white/5 border border-white/10 group preserve-3d will-change-transform will-change-opacity"
             >
               <div className="absolute inset-0 flex items-center justify-center opacity-20 transition-opacity">
                 <activeEvent.icon size={48} color={activeEvent.color} />
@@ -253,9 +250,8 @@ export function PreviousYearHighlights() {
           <div 
             ref={navCarouselRef}
             onScroll={handleNavScroll}
-            className={`flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 hide-scrollbar ${isMobile ? "snap-x snap-mandatory" : ""}`}
+            className={`flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 hide-scrollbar perspective-1000 ${isMobile ? "snap-x snap-mandatory" : ""}`}
             style={{
-               perspective: "1000px",
                paddingLeft: isMobile ? "calc(50vw - 120px)" : undefined,
                paddingRight: isMobile ? "calc(50vw - 120px)" : undefined,
             }}
@@ -263,9 +259,9 @@ export function PreviousYearHighlights() {
             {highlightData.map((event, index) => {
               const isActive = index === activeIndex;
               const distance = index - activeIndex;
-              const rotateY = isMobile ? (distance === 0 ? 0 : distance > 0 ? -20 : 20) : 0;
+              const rotateY = isMobile ? (distance === 0 ? 0 : distance > 0 ? -25 : 25) : 0;
               const scale = isMobile ? (distance === 0 ? 1 : 0.85) : 1;
-              const opacity = isMobile ? (distance === 0 ? 1 : 0.5) : 1;
+              const opacity = isMobile ? (distance === 0 ? 1 : 0.7) : 1;
               const zIndex = isMobile ? (distance === 0 ? 10 : 0) : 1;
               const Icon = event.icon;
 
@@ -273,10 +269,9 @@ export function PreviousYearHighlights() {
                 <motion.div 
                   key={event.id}
                   onClick={() => handleTabClick(index)}
-                  className={`nav-carousel-item relative shrink-0 lg:w-full cursor-pointer group ${isMobile ? "snap-center w-[240px]" : "w-[260px]"}`}
+                  className={`nav-carousel-item relative shrink-0 lg:w-full cursor-pointer group preserve-3d will-change-transform will-change-opacity ${isMobile ? "snap-center w-[240px]" : "w-[260px]"}`}
                   animate={isMobile ? { rotateY, scale, opacity, zIndex } : { rotateY: 0, scale: 1, opacity: 1, zIndex: 1 }}
                   transition={{ duration: 0.4 }}
-                  style={{ transformStyle: "preserve-3d" }}
                 >
                   {/* Desktop Timeline Line */}
                   <div className="hidden lg:block absolute left-[-24px] top-0 bottom-[-16px] w-[2px] bg-white/10 z-0" />
@@ -412,11 +407,6 @@ export function PreviousYearHighlights() {
         </div>
       </div>
       
-      <style>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 }

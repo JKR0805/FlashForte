@@ -291,18 +291,43 @@
   }
 
   .glass-menu {
-    background: rgba(5, 8, 22, 0.95);
+    background: rgba(5, 8, 22, 0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(166, 120, 255, 0.15);
   }
 
   .glass-card {
-    background: rgba(5, 8, 22, 0.6);
+    background: rgba(5, 8, 22, 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(143, 107, 255, 0.3);
     box-shadow: 0 0 30px rgba(143, 107, 255, 0.05);
+  }
+
+  .glass-timer-card {
+    background: rgba(10, 10, 15, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(63, 224, 255, 0.08), 0 0 40px rgba(143, 107, 255, 0.04);
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
   .btn-outline-glow {

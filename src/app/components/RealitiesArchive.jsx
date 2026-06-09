@@ -85,20 +85,17 @@ export function RealitiesArchive() {
         <div
           ref={carouselRef}
           onScroll={handleScroll}
-          className={`flex gap-4 lg:gap-8 overflow-x-auto hide-scrollbar py-10 w-full ${isMobile ? "snap-x snap-mandatory" : "justify-center px-4"}`}
+          className={`flex gap-4 lg:gap-8 overflow-x-auto hide-scrollbar py-10 w-full perspective-1000 ${isMobile ? "snap-x snap-mandatory" : "justify-center px-4"}`}
           style={{ 
-            scrollbarWidth: "none", 
-            msOverflowStyle: "none",
             paddingLeft: isMobile ? "calc(50vw - 120px)" : undefined,
             paddingRight: isMobile ? "calc(50vw - 120px)" : undefined,
-            perspective: "1000px"
           }}
         >
           {archivePosters.map((poster, index) => {
             const distance = index - activeIndex;
             const rotateY = isMobile ? (distance === 0 ? 0 : distance > 0 ? -25 : 25) : 0;
-            const scale = isMobile ? (distance === 0 ? 1 : 0.8) : 1;
-            const opacity = isMobile ? (distance === 0 ? 1 : 0.4) : 1;
+            const scale = isMobile ? (distance === 0 ? 1 : 0.85) : 1;
+            const opacity = isMobile ? (distance === 0 ? 1 : 0.7) : 1;
             const zIndex = isMobile ? (distance === 0 ? 10 : 0) : 1;
 
             return (
@@ -109,8 +106,7 @@ export function RealitiesArchive() {
                 viewport={{ once: true, margin: "-50px" }}
                 animate={isMobile ? { rotateY, scale, opacity, zIndex } : { zIndex: 1, rotateY: 0, scale: 1, opacity: 1 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className={`archive-carousel-item shrink-0 lg:w-[320px] aspect-[1/1.4] rounded-[20px] relative group cursor-pointer ${isMobile ? "snap-center w-[240px]" : "w-[280px]"}`}
-                style={{ transformStyle: "preserve-3d" }}
+                className={`archive-carousel-item shrink-0 lg:w-[320px] aspect-[1/1.4] rounded-[20px] relative group cursor-pointer preserve-3d will-change-transform will-change-opacity ${isMobile ? "snap-center w-[240px]" : "w-[280px]"}`}
               >
                 {/* Holographic Panel Background / Image Placeholder */}
                 <div 
@@ -135,11 +131,6 @@ export function RealitiesArchive() {
         </div>
       </div>
 
-      <style>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 }

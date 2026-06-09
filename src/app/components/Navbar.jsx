@@ -17,9 +17,9 @@ const navbarVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1.2,
+      duration: 1.0,
       ease: BUTTERY_EASE,
-      delay: 1.8, // Phase 3 starts at T=1.8s
+      delay: 1.0,
     },
   },
 };
