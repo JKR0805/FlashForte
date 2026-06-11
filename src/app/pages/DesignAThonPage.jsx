@@ -1,4 +1,4 @@
-import { useRef, useState , useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion, useInView } from "framer-motion";
 import {
@@ -14,7 +14,8 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
-import { StarField } from "../components/HeroSection.jsx";
+
+
 
 /* ═══════════════════════════════════════════════════════════
    Shared Motion Constants  (identical to GameAThonPage)
@@ -221,6 +222,7 @@ function DesignCard({ icon: Icon, title, description, accentColor = "#22C55E", d
       <div
         className="glass-card rounded-[20px] p-6 h-full flex flex-col gap-4 cursor-default"
         style={{
+          border: `1px solid ${accentColor}33`,
           transition:
             "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.4s ease",
           willChange: "transform",
@@ -284,6 +286,7 @@ function ToolCard({ icon: Icon, title, delay = 0 }) {
       <div
         className="glass-card rounded-[16px] px-5 py-6 flex flex-col items-center gap-3 text-center cursor-default"
         style={{
+          border: "1px solid rgba(34,197,94,0.2)",
           transition:
             "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.4s ease",
           willChange: "transform",
@@ -402,28 +405,24 @@ const DESIGN_CARDS = [
     title: "UI/UX Design",
     description:
       "Craft intuitive, human-centered interfaces that balance aesthetics with usability. From wireframes to high-fidelity prototypes — design that works beautifully.",
-    accentColor: "#22C55E",
   },
   {
     icon: Palette,
     title: "Graphic Design",
     description:
       "Visual storytelling through typography, color, and composition. Posters, brand identity, motion graphics — express ideas that stop the scroll.",
-    accentColor: "#4ADE80",
   },
   {
     icon: Box,
     title: "3D Modelling",
     description:
       "Shape imagination into dimension. Product renders, spatial compositions, and volumetric scenes that blur the line between digital and physical.",
-    accentColor: "#14B8A6",
   },
   {
     icon: Trophy,
     title: "Exciting Prizes",
     description:
       "The best designs earn recognition, rewards, and a place in the FlashForte hall of creative excellence. Show your craft — win what you deserve.",
-    accentColor: "#86EFAC",
   },
 ];
 
@@ -446,187 +445,127 @@ const GALLERY_ITEMS = [
 ];
 
 /* ═══════════════════════════════════════════════════════════
+   RibbonCursor — green-themed canvas ribbon trail
+   (mirrors GameAThonPage RibbonCursor, re-colored for green)
+   ═══════════════════════════════════════════════════════════ */
+function RibbonCursor() {
+  const canvasRef = useRef(null);
+  const frameRef = useRef(null);
+  const mouseRef = useRef({ x: -200, y: -200 });
+  const pointsRef = useRef([]);
+  const activeRef = useRef(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(hover: none)").matches) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const TRAIL = 28;
+    const THICKNESS = 14;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    pointsRef.current = Array.from({ length: TRAIL }, () => ({
+      x: -200,
+      y: -200,
+    }));
+
+    function onMove(e) {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+      if (!activeRef.current) {
+        activeRef.current = true;
+        pointsRef.current = Array.from({ length: TRAIL }, () => ({
+          x: e.clientX,
+          y: e.clientY,
+        }));
+      }
+    }
+    window.addEventListener("mousemove", onMove);
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const head = pointsRef.current[0];
+      head.x += (mouseRef.current.x - head.x) * 0.36;
+      head.y += (mouseRef.current.y - head.y) * 0.36;
+
+      for (let i = 1; i < TRAIL; i++) {
+        const prev = pointsRef.current[i - 1];
+        const cur = pointsRef.current[i];
+        cur.x += (prev.x - cur.x) * 0.42;
+        cur.y += (prev.y - cur.y) * 0.42;
+      }
+
+      for (let i = 0; i < TRAIL - 1; i++) {
+        const t = i / (TRAIL - 1);
+        const p1 = pointsRef.current[i];
+        const p2 = pointsRef.current[i + 1];
+
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const len = Math.sqrt(dx * dx + dy * dy) || 1;
+        const nx = (-dy / len) * THICKNESS * (1 - t) * 0.5;
+        const ny = (dx / len) * THICKNESS * (1 - t) * 0.5;
+
+        const alpha = (1 - t) * 0.55;
+
+        // Green gradient: #22C55E → #4ADE80 → #14B8A6
+        const r = Math.round(34 + t * (20 - 34));
+        const g = Math.round(197 - t * 13);
+        const b = Math.round(94 + t * (166 - 94));
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x + nx, p1.y + ny);
+        ctx.lineTo(p1.x - nx, p1.y - ny);
+        ctx.lineTo(p2.x - nx * (1 - 1 / TRAIL), p2.y - ny * (1 - 1 / TRAIL));
+        ctx.lineTo(p2.x + nx * (1 - 1 / TRAIL), p2.y + ny * (1 - 1 / TRAIL));
+        ctx.closePath();
+
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        ctx.fill();
+      }
+
+      frameRef.current = requestAnimationFrame(draw);
+    }
+
+    frameRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("resize", resize);
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        zIndex: 9999,
+      }}
+    />
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    MAIN PAGE COMPONENT
    ═══════════════════════════════════════════════════════════ */
 export function DesignAThonPage() {
   const [entranceComplete, setEntranceComplete] = useState(false);
-useEffect(() => {
-  const handleMove = (e) => {
-    const star = document.createElement("div");
 
-    const symbols = ["✦", "✧", "✨", "✷"];
-    star.innerHTML =
-      symbols[Math.floor(Math.random() * symbols.length)];
-
-    star.style.position = "fixed";
-    star.style.left = `${e.clientX}px`;
-    star.style.top = `${e.clientY}px`;
-
-    star.style.color = "#4ADE80";
-    star.style.fontSize = "14px";
-
-    star.style.pointerEvents = "none";
-    star.style.zIndex = "99999";
-
-    star.style.textShadow =
-      "0 0 10px #22C55E, 0 0 20px #22C55E";
-
-    star.style.transition =
-      "transform 0.8s ease, opacity 0.8s ease";
-
-    document.body.appendChild(star);
-
-    requestAnimationFrame(() => {
-      star.style.opacity = "0";
-      star.style.transform =
-        `translateY(-20px) rotate(${Math.random() * 90}deg) scale(0.5)`;
-    });
-
-    setTimeout(() => {
-      star.remove();
-    }, 800);
-  };
-
-  window.addEventListener("mousemove", handleMove);
-
-  return () => {
-    window.removeEventListener("mousemove", handleMove);
-  };
-}, []);
-const [loading, setLoading] = useState(true);
-const [progress, setProgress] = useState(0);
-
-useEffect(() => {
-  const interval = setInterval(() => {
-    setProgress((prev) => {
-      if (prev >= 100) {
-        clearInterval(interval);
-
-        setTimeout(() => {
-          setLoading(false);
-        }, 300);
-
-        return 100;
-      }
-
-      return prev + 2;
-    });
-  }, 35);
-
-  return () => clearInterval(interval);
-}, []);
-if (loading) {
-  return (
-    <div
-      className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
-      style={{
-        background: "#050816",
-        zIndex: 999999,
-      }}
-    >
-      {/* Main Glow */}
-      <div
-        style={{
-          position: "absolute",
-          width: "650px",
-          height: "650px",
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(74,222,128,0.18), transparent 70%)",
-          filter: "blur(60px)",
-        }}
-      />
-
-      {/* Outer Ring */}
-      <div
-        style={{
-          position: "absolute",
-          width: "500px",
-          height: "500px",
-          borderRadius: "50%",
-          border: "1px solid rgba(74,222,128,0.15)",
-        }}
-      />
-
-      {/* Inner Ring */}
-      <div
-        style={{
-          position: "absolute",
-          width: "380px",
-          height: "380px",
-          borderRadius: "50%",
-          border: "1px solid rgba(74,222,128,0.25)",
-        }}
-      />
-
-      {/* Title */}
-      <motion.h1
-        animate={{
-          opacity: [0.75, 1, 0.75],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-        }}
-        style={{
-          fontSize: "5rem",
-          fontWeight: 900,
-          color: "#4ADE80",
-          letterSpacing: "0.25em",
-          textShadow:
-            "0 0 20px rgba(74,222,128,0.6)",
-          zIndex: 10,
-        }}
-      >
-        DESIGN-A-THON
-      </motion.h1>
-
-      {/* Subtitle */}
-      <motion.div
-        animate={{
-          opacity: [0.4, 1, 0.4],
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 1.5,
-        }}
-        style={{
-          marginTop: "20px",
-          color: "#8FFFD1",
-          letterSpacing: "0.35em",
-          fontSize: "0.9rem",
-          zIndex: 10,
-        }}
-      >
-        INITIALIZING CREATIVE UNIVERSE
-      </motion.div>
-
-      {/* Progress Bar */}
-      <div
-        style={{
-          width: "320px",
-          height: "3px",
-          marginTop: "40px",
-          background: "rgba(255,255,255,0.08)",
-          overflow: "hidden",
-          zIndex: 10,
-        }}
-      >
-        <motion.div
-          animate={{
-            width: `${progress}%`,
-          }}
-          style={{
-            height: "100%",
-            background: "#4ADE80",
-            boxShadow:
-              "0 0 10px #4ADE80, 0 0 20px #4ADE80",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
   return (
 <motion.div
   initial={{
@@ -643,39 +582,7 @@ if (loading) {
   }}
 >
 
-      <style>
-{`
-.comet-particle{
-  position:fixed;
-  width:8px;
-  height:8px;
-  border-radius:9999px;
-  pointer-events:none;
-  z-index:99999;
-
-  background:#4ADE80;
-
-  box-shadow:
-    0 0 10px #4ADE80,
-    0 0 20px #22C55E,
-    0 0 35px #14B8A6;
-
-  animation: cometFade .8s linear forwards;
-}
-
-@keyframes cometFade{
-  from{
-    opacity:1;
-    transform:scale(1);
-  }
-
-  to{
-    opacity:0;
-    transform:scale(.1);
-  }
-}
-`}
-</style>
+      <RibbonCursor />
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-space-radial" />
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="bg-planet-top-right" />
@@ -692,33 +599,7 @@ if (loading) {
         }}
       />
 
-      <StarField />
-      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
-  {Array.from({ length: 60 }).map((_, i) => (
-    <span
-      key={i}
-      style={{
-        position: "absolute",
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
-        color: "white",
-        opacity: 0.25 + Math.random() * 0.5,
-        fontSize: `${4 + Math.random() * 6}px`,
-        textShadow: "0 0 8px rgba(255,255,255,0.8)",
-      }}
-    >
-      ✦
-    </span>
-  ))}
-</div>
-<style>
-{`
-@keyframes twinkle{
-  0%,100%{opacity:.2;}
-  50%{opacity:1;}
-}
-`}
-</style>
+
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           SECTION 1 — HERO
@@ -739,17 +620,7 @@ if (loading) {
           animate="visible"
           onAnimationComplete={() => setEntranceComplete(true)}
         >
-          {/* Eyebrow label */}
-          <motion.p
-            className="text-[#22C55E] text-[10px] font-bold tracking-[0.22em] uppercase mb-4 flex items-center gap-2"
-            variants={fadeIn}
-          >
-            <span
-              className="inline-block w-6 h-px"
-              style={{ background: "linear-gradient(90deg, #22C55E, transparent)" }}
-            />
-            COMPUTER SOCIETY OF INDIA · VNRVJIET
-          </motion.p>
+
 
           <motion.h1
             className="font-orbitron text-[clamp(32px,8.5vw,68px)] font-black text-[#F8FAFC] tracking-[0.05em] m-0 leading-[1.05] whitespace-nowrap"
@@ -788,10 +659,10 @@ if (loading) {
 
           {/* Tagline */}
           <motion.p
-            className="text-[#FFFFFF] text-[clamp(17px,3.2vw,26px)] font-extrabold leading-[1.35] tracking-[0.08em] mb-2 mt-0 uppercase"
+            className="text-[#FFFFFF] text-[clamp(17px,3.2vw,26px)] font-extrabold leading-[1.35] tracking-[0.08em] mb-2 mt-0 capitalize"
             variants={slideUp}
           >
-            DESIGN.{" "}
+            Design.{" "}
             <span
               style={{
                 background: "linear-gradient(90deg, #22C55E, #4ADE80)",
@@ -800,24 +671,22 @@ if (loading) {
                 backgroundClip: "text",
               }}
             >
-              CREATE.
+            Create.
             </span>{" "}
-            ELEVATE.
+            Elevate.
           </motion.p>
 
           <motion.p
-            className="text-[#C8D3F5] text-[clamp(13px,1.8vw,16px)] leading-[1.8] max-w-[460px] mb-6"
+            className="text-[#C8D3F5] text-[clamp(13px,1.8vw,16px)] leading-[1.8] max-w-[500px] mb-6"
             variants={slideUp}
           >
-            Transform ideas into experiences.
+            Step into the ultimate design challenge where ideas become icons.
             <br />
-            Craft interfaces that feel alive.
-            <br />
-            Bring imagination to life.
+            Craft visuals so powerful, they inspire, engage, and leave a mark.
           </motion.p>
 
           {/* Feature pills — quick stats row */}
-          <motion.div
+          {/* <motion.div
             className="flex flex-wrap justify-center lg:justify-start gap-3 mb-7 w-full"
             variants={fadeIn}
           >
@@ -838,7 +707,7 @@ if (loading) {
                 {label}
               </span>
             ))}
-          </motion.div>
+          </motion.div> */}
 
           {/* CTA buttons */}
           <motion.div
@@ -1049,13 +918,9 @@ if (loading) {
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="design-disciplines"
-        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pb-20 md:pb-28"
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pt-20 pb-20 md:pt-24 md:pb-28"
         style={{
           scrollMarginTop: "92px",
-          minHeight: "100dvh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
         }}
       >
         <div className="text-center mb-10">
@@ -1081,17 +946,85 @@ if (loading) {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 3.5 — DESIGN JOURNEY
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section
+        id="design-journey"
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pt-20 pb-10 md:pt-24 md:pb-14"
+        style={{ scrollMarginTop: "92px" }}
+      >
+        <div className="text-center mb-10">
+          <ScrollReveal variants={slideUp}>
+            <h2
+              className="font-orbitron text-[clamp(24px,4.5vw,42px)] font-black text-[#F8FAFC] tracking-[0.04em] m-0 mb-4"
+              style={{ textShadow: "0 0 40px rgba(34,197,94,0.35)" }}
+            >
+              The Design Realm
+            </h2>
+            <p className="text-[#7E89A8] text-[clamp(13px,1.8vw,16px)] leading-[1.7] max-w-[520px] mx-auto">
+              Your journey from a raw concept to a polished, high-fidelity masterpiece. Two rounds to the stage.
+            </p>
+          </ScrollReveal>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-6 items-stretch max-w-[1000px] mx-auto">
+          {/* Round 1 */}
+          <ScrollReveal className="flex-1">
+            <div className="glass-card rounded-[20px] p-8 h-full flex flex-col relative overflow-hidden group cursor-default" style={{ border: '1px solid rgba(34,197,94,0.2)', borderTop: '2px solid #22C55E' }}>
+              <div className="absolute top-4 right-6 font-orbitron text-[5rem] font-black text-[#22C55E]/5 leading-none select-none transition-transform duration-500 group-hover:scale-110">01</div>
+              <div className="w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 mb-5 relative z-10" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.2) 0%, rgba(34,197,94,0.1) 100%)', border: '1px solid rgba(34,197,94,0.4)' }}>
+                 <Palette size={24} color="#22C55E" />
+              </div>
+              <p className="text-[12px] tracking-[0.25em] text-[#22C55E] uppercase font-semibold mb-2 relative z-10">Round One</p>
+              <h3 className="text-[#F8FAFC] text-[18px] font-bold mb-3 tracking-[0.04em] relative z-10">THE DESIGN FLOOR</h3>
+              <p className="text-[#7E89A8] text-[14px] leading-[1.75] relative z-10 flex-1">
+                Pick your theme from a curated list and pour your sharpest instincts into a poster that commands attention and tells a story.
+              </p>
+              <div className="mt-6 flex items-center gap-3 relative z-10">
+                <div className="w-8 h-[1px] bg-[#22C55E]/60" />
+                <span className="text-[12px] tracking-[0.2em] text-[#22C55E] uppercase font-bold">Online Submission</span>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Arrow */}
+          <div className="hidden md:flex items-center shrink-0">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-[1px] h-8 bg-gradient-to-b from-transparent to-[#22C55E]/40" />
+              <span className="text-[#22C55E]/60 text-[16px] leading-none">▶</span>
+              <div className="w-[1px] h-8 bg-gradient-to-t from-transparent to-[#22C55E]/40" />
+            </div>
+          </div>
+
+          {/* Round 2 */}
+          <ScrollReveal className="flex-1" delay={0.15}>
+            <div className="glass-card rounded-[20px] p-8 h-full flex flex-col relative overflow-hidden group cursor-default" style={{ border: '1px solid rgba(34,197,94,0.2)', borderTop: '2px solid #22C55E' }}>
+              <div className="absolute top-4 right-6 font-orbitron text-[5rem] font-black text-[#22C55E]/5 leading-none select-none transition-transform duration-500 group-hover:scale-110">02</div>
+              <div className="w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 mb-5 relative z-10" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.2) 0%, rgba(34,197,94,0.1) 100%)', border: '1px solid rgba(34,197,94,0.4)' }}>
+                 <Monitor size={24} color="#22C55E" />
+              </div>
+              <p className="text-[12px] tracking-[0.25em] text-[#22C55E] uppercase font-semibold mb-2 relative z-10">Round Two</p>
+              <h3 className="text-[#F8FAFC] text-[18px] font-bold mb-3 tracking-[0.04em] relative z-10">THE FINAL VERDICT</h3>
+              <p className="text-[#7E89A8] text-[14px] leading-[1.75] relative z-10 flex-1">
+                Present your designs to a panel of judges — break down your vision, your process, and the thinking behind every choice that made your poster what it is.
+              </p>
+              <div className="mt-6 flex items-center gap-3 relative z-10">
+                <div className="w-8 h-[1px] bg-[#22C55E]/60" />
+                <span className="text-[12px] tracking-[0.2em] text-[#22C55E] uppercase font-bold">Live Presentation</span>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           SECTION 4 — TOOLS & SKILLS
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="design-tools"
-        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pb-20 md:pb-28"
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pt-20 pb-20 md:pt-24 md:pb-28"
         style={{
           scrollMarginTop: "92px",
-          minHeight: "100dvh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
         }}
       >
         <div className="text-center mb-10">
@@ -1121,13 +1054,9 @@ if (loading) {
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="highlights"
-        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pb-20 md:pb-28"
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pt-20 pb-20 md:pt-24 md:pb-28"
         style={{
           scrollMarginTop: "92px",
-          minHeight: "100dvh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
         }}
       >
         <div className="text-center mb-10">
