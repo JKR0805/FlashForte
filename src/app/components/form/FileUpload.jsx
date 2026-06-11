@@ -27,7 +27,7 @@ const Spinner = () => (
   </svg>
 );
 
-export const FileUpload = memo(function FileUpload({ file, setFile, acceptedTypes, acceptedMimeTypes, setErrorMsg, isSubmitting }) {
+export const FileUpload = memo(function FileUpload({ file, setFile, acceptedTypes, acceptedMimeTypes, setErrorMsg, isSubmitting, uploadProgress }) {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -112,7 +112,9 @@ export const FileUpload = memo(function FileUpload({ file, setFile, acceptedType
         )}
         
         {isSubmitting ? (
-          <span className="reg-dropzone__text">Uploading...</span>
+          <span className="reg-dropzone__text" style={{ color: "#00d2c8", fontWeight: "600" }}>
+            {uploadProgress < 100 ? `Uploading... ${uploadProgress}%` : "Processing on server..."}
+          </span>
         ) : file ? (
           <span className="reg-dropzone__filename">{file.name}</span>
         ) : (
@@ -123,7 +125,9 @@ export const FileUpload = memo(function FileUpload({ file, setFile, acceptedType
         
         <span className="reg-dropzone__hint">
           {isSubmitting 
-            ? "Please wait while your file is securely transferred." 
+            ? uploadProgress < 100 
+              ? "Please keep this page open while your file securely transfers."
+              : "Upload complete! Awaiting server response..."
             : file 
               ? "Click to replace" 
               : (acceptedTypes 

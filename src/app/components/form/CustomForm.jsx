@@ -59,12 +59,78 @@ export function CustomForm({
 }) {
   const [formData, setFormData] = useState({});
   const [file, setFile] = useState(null);
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [status, setStatus] = useState("idle"); // idle, loading, success, error
   const [errorMsg, setErrorMsg] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleFieldChange = useCallback((name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }, []);
+
+  const compressImageToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    // Reject very large files early
+    if (file.size > 10 * 1024 * 1024) {
+      reject(new Error("Image must be smaller than 10MB."));
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const img = new Image();
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+
+        let { width, height } = img;
+
+        // Maintain aspect ratio
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+          reject(new Error("Failed to create canvas context."));
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Use JPEG for better compression
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+
+        // Remove "data:image/jpeg;base64,"
+        resolve(dataUrl.split(",")[1]);
+      };
+
+      img.onerror = () =>
+        reject(new Error("Failed to process image."));
+
+      img.src = e.target.result;
+    };
+
+    reader.onerror = () =>
+      reject(new Error("Failed to read image file."));
+
+    reader.readAsDataURL(file);
+  });
 
   const fileToBase64 = (f) =>
     new Promise((resolve, reject) => {
@@ -99,27 +165,55 @@ export function CustomForm({
     // File upload is now optional, so we remove the strict requirement check.
 
     setStatus("loading");
+    setUploadProgress(0);
 
     try {
       const payload = { ...formData };
 
       if (allowFileUpload && file) {
-        payload.fileName = file.name;
-        payload.mimeType = file.type;
-        payload.fileBase64 = await fileToBase64(file);
+        if (file.type.startsWith("image/")) {
+          // Compress images drastically before sending
+          payload.fileBase64 = await compressImageToBase64(file);
+          payload.mimeType = "image/jpeg";
+          payload.fileName = file.name.replace(/\.[^/.]+$/, "") + "_compressed.jpg";
+        } else {
+          payload.fileBase64 = await fileToBase64(file);
+          payload.mimeType = file.type;
+          payload.fileName = file.name;
+        }
       }
 
-      const response = await fetch(appScriptUrl, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload),
+      const responseData = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", appScriptUrl, true);
+        xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress(percentComplete);
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              resolve(JSON.parse(xhr.responseText));
+            } catch (e) {
+              resolve({});
+            }
+          } else {
+            reject(new Error(`Server responded with status ${xhr.status}`));
+          }
+        };
+
+        xhr.onerror = () => {
+          reject(new Error("Transmission failed. Please check your connection."));
+        };
+
+        xhr.send(JSON.stringify(payload));
       });
 
-      if (!response.ok) {
-        throw new Error(`Server responded with status ${response.status}`);
-      }
-      
-      const responseData = await response.json().catch(() => ({}));
       if (responseData.result === "error") {
         throw new Error(responseData.message || "Server rejected submission");
       }
