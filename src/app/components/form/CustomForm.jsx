@@ -191,37 +191,17 @@ export function CustomForm({
         }
       }
 
-      const responseData = await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", appScriptUrl, true);
-        xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
-
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            const percentComplete = Math.round((event.loaded / event.total) * 100);
-            setUploadProgress(percentComplete);
-          }
-        };
-
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              resolve(JSON.parse(xhr.responseText));
-            } catch (e) {
-              resolve({});
-            }
-          } else {
-            reject(new Error(`Server responded with status ${xhr.status}`));
-          }
-        };
-
-        xhr.onerror = () => {
-          reject(new Error("Transmission failed. Please check your connection."));
-        };
-
-        xhr.send(JSON.stringify(payload));
+      const response = await fetch(appScriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
       });
 
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+      
+      const responseData = await response.json().catch(() => ({}));
       if (responseData.result === "error") {
         throw new Error(responseData.message || "Server rejected submission");
       }
