@@ -14,7 +14,8 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
-import { StarField } from "../components/HeroSection.jsx";
+
+
 
 /* ═══════════════════════════════════════════════════════════
    Shared Motion Constants  (identical to GameAThonPage)
@@ -221,6 +222,7 @@ function DesignCard({ icon: Icon, title, description, accentColor = "#22C55E", d
       <div
         className="glass-card rounded-[20px] p-6 h-full flex flex-col gap-4 cursor-default"
         style={{
+          border: `1px solid ${accentColor}33`,
           transition:
             "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.4s ease",
           willChange: "transform",
@@ -284,6 +286,7 @@ function ToolCard({ icon: Icon, title, delay = 0 }) {
       <div
         className="glass-card rounded-[16px] px-5 py-6 flex flex-col items-center gap-3 text-center cursor-default"
         style={{
+          border: "1px solid rgba(34,197,94,0.2)",
           transition:
             "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.4s ease",
           willChange: "transform",
@@ -402,28 +405,24 @@ const DESIGN_CARDS = [
     title: "UI/UX Design",
     description:
       "Craft intuitive, human-centered interfaces that balance aesthetics with usability. From wireframes to high-fidelity prototypes — design that works beautifully.",
-    accentColor: "#22C55E",
   },
   {
     icon: Palette,
     title: "Graphic Design",
     description:
       "Visual storytelling through typography, color, and composition. Posters, brand identity, motion graphics — express ideas that stop the scroll.",
-    accentColor: "#4ADE80",
   },
   {
     icon: Box,
     title: "3D Modelling",
     description:
       "Shape imagination into dimension. Product renders, spatial compositions, and volumetric scenes that blur the line between digital and physical.",
-    accentColor: "#14B8A6",
   },
   {
     icon: Trophy,
     title: "Exciting Prizes",
     description:
       "The best designs earn recognition, rewards, and a place in the FlashForte hall of creative excellence. Show your craft — win what you deserve.",
-    accentColor: "#86EFAC",
   },
 ];
 
@@ -943,6 +942,78 @@ export function DesignAThonPage() {
           {DESIGN_CARDS.map((card, i) => (
             <DesignCard key={card.title} {...card} delay={i * 0.1} />
           ))}
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 3.5 — DESIGN JOURNEY
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section
+        id="design-journey"
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-5 pt-20 pb-10 md:pt-24 md:pb-14"
+        style={{ scrollMarginTop: "92px" }}
+      >
+        <div className="text-center mb-10">
+          <ScrollReveal variants={slideUp}>
+            <h2
+              className="font-orbitron text-[clamp(24px,4.5vw,42px)] font-black text-[#F8FAFC] tracking-[0.04em] m-0 mb-4"
+              style={{ textShadow: "0 0 40px rgba(34,197,94,0.35)" }}
+            >
+              The Design Realm
+            </h2>
+            <p className="text-[#7E89A8] text-[clamp(13px,1.8vw,16px)] leading-[1.7] max-w-[520px] mx-auto">
+              Your journey from a raw concept to a polished, high-fidelity masterpiece. Two rounds to the stage.
+            </p>
+          </ScrollReveal>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-6 items-stretch max-w-[1000px] mx-auto">
+          {/* Round 1 */}
+          <ScrollReveal className="flex-1">
+            <div className="glass-card rounded-[20px] p-8 h-full flex flex-col relative overflow-hidden group cursor-default" style={{ border: '1px solid rgba(34,197,94,0.2)', borderTop: '2px solid #22C55E' }}>
+              <div className="absolute top-4 right-6 font-orbitron text-[5rem] font-black text-[#22C55E]/5 leading-none select-none transition-transform duration-500 group-hover:scale-110">01</div>
+              <div className="w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 mb-5 relative z-10" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.2) 0%, rgba(34,197,94,0.1) 100%)', border: '1px solid rgba(34,197,94,0.4)' }}>
+                 <Palette size={24} color="#22C55E" />
+              </div>
+              <p className="text-[12px] tracking-[0.25em] text-[#22C55E] uppercase font-semibold mb-2 relative z-10">Round One</p>
+              <h3 className="text-[#F8FAFC] text-[18px] font-bold mb-3 tracking-[0.04em] relative z-10">THE DESIGN FLOOR</h3>
+              <p className="text-[#7E89A8] text-[14px] leading-[1.75] relative z-10 flex-1">
+                Pick your theme from a curated list and pour your sharpest instincts into a poster that commands attention and tells a story.
+              </p>
+              <div className="mt-6 flex items-center gap-3 relative z-10">
+                <div className="w-8 h-[1px] bg-[#22C55E]/60" />
+                <span className="text-[12px] tracking-[0.2em] text-[#22C55E] uppercase font-bold">Online Submission</span>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Arrow */}
+          <div className="hidden md:flex items-center shrink-0">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-[1px] h-8 bg-gradient-to-b from-transparent to-[#22C55E]/40" />
+              <span className="text-[#22C55E]/60 text-[16px] leading-none">▶</span>
+              <div className="w-[1px] h-8 bg-gradient-to-t from-transparent to-[#22C55E]/40" />
+            </div>
+          </div>
+
+          {/* Round 2 */}
+          <ScrollReveal className="flex-1" delay={0.15}>
+            <div className="glass-card rounded-[20px] p-8 h-full flex flex-col relative overflow-hidden group cursor-default" style={{ border: '1px solid rgba(34,197,94,0.2)', borderTop: '2px solid #22C55E' }}>
+              <div className="absolute top-4 right-6 font-orbitron text-[5rem] font-black text-[#22C55E]/5 leading-none select-none transition-transform duration-500 group-hover:scale-110">02</div>
+              <div className="w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 mb-5 relative z-10" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.2) 0%, rgba(34,197,94,0.1) 100%)', border: '1px solid rgba(34,197,94,0.4)' }}>
+                 <Monitor size={24} color="#22C55E" />
+              </div>
+              <p className="text-[12px] tracking-[0.25em] text-[#22C55E] uppercase font-semibold mb-2 relative z-10">Round Two</p>
+              <h3 className="text-[#F8FAFC] text-[18px] font-bold mb-3 tracking-[0.04em] relative z-10">THE FINAL VERDICT</h3>
+              <p className="text-[#7E89A8] text-[14px] leading-[1.75] relative z-10 flex-1">
+                Present your designs to a panel of judges — break down your vision, your process, and the thinking behind every choice that made your poster what it is.
+              </p>
+              <div className="mt-6 flex items-center gap-3 relative z-10">
+                <div className="w-8 h-[1px] bg-[#22C55E]/60" />
+                <span className="text-[12px] tracking-[0.2em] text-[#22C55E] uppercase font-bold">Live Presentation</span>
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
