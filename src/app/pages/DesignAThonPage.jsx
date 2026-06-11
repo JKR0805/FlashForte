@@ -450,10 +450,232 @@ const GALLERY_ITEMS = [
    ═══════════════════════════════════════════════════════════ */
 export function DesignAThonPage() {
   const [entranceComplete, setEntranceComplete] = useState(false);
+useEffect(() => {
+  const handleMove = (e) => {
+    const star = document.createElement("div");
 
+    const symbols = ["✦", "✧", "✨", "✷"];
+    star.innerHTML =
+      symbols[Math.floor(Math.random() * symbols.length)];
+
+    star.style.position = "fixed";
+    star.style.left = `${e.clientX}px`;
+    star.style.top = `${e.clientY}px`;
+
+    star.style.color = "#4ADE80";
+    star.style.fontSize = "14px";
+
+    star.style.pointerEvents = "none";
+    star.style.zIndex = "99999";
+
+    star.style.textShadow =
+      "0 0 10px #22C55E, 0 0 20px #22C55E";
+
+    star.style.transition =
+      "transform 0.8s ease, opacity 0.8s ease";
+
+    document.body.appendChild(star);
+
+    requestAnimationFrame(() => {
+      star.style.opacity = "0";
+      star.style.transform =
+        `translateY(-20px) rotate(${Math.random() * 90}deg) scale(0.5)`;
+    });
+
+    setTimeout(() => {
+      star.remove();
+    }, 800);
+  };
+
+  window.addEventListener("mousemove", handleMove);
+
+  return () => {
+    window.removeEventListener("mousemove", handleMove);
+  };
+}, []);
+const [loading, setLoading] = useState(true);
+const [progress, setProgress] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setProgress((prev) => {
+      if (prev >= 100) {
+        clearInterval(interval);
+
+        setTimeout(() => {
+          setLoading(false);
+        }, 300);
+
+        return 100;
+      }
+
+      return prev + 2;
+    });
+  }, 35);
+
+  return () => clearInterval(interval);
+}, []);
+if (loading) {
   return (
-    <div className="relative w-full max-w-[100vw] overflow-x-hidden flex flex-col font-inter bg-[#050816]">
-      {/* Fixed backgrounds */}
+    <div
+      className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
+      style={{
+        background: "#050816",
+        zIndex: 999999,
+      }}
+    >
+      {/* Main Glow */}
+      <div
+        style={{
+          position: "absolute",
+          width: "650px",
+          height: "650px",
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(74,222,128,0.18), transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
+
+      {/* Outer Ring */}
+      <div
+        style={{
+          position: "absolute",
+          width: "500px",
+          height: "500px",
+          borderRadius: "50%",
+          border: "1px solid rgba(74,222,128,0.15)",
+        }}
+      />
+
+      {/* Inner Ring */}
+      <div
+        style={{
+          position: "absolute",
+          width: "380px",
+          height: "380px",
+          borderRadius: "50%",
+          border: "1px solid rgba(74,222,128,0.25)",
+        }}
+      />
+
+      {/* Title */}
+      <motion.h1
+        animate={{
+          opacity: [0.75, 1, 0.75],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+        }}
+        style={{
+          fontSize: "5rem",
+          fontWeight: 900,
+          color: "#4ADE80",
+          letterSpacing: "0.25em",
+          textShadow:
+            "0 0 20px rgba(74,222,128,0.6)",
+          zIndex: 10,
+        }}
+      >
+        DESIGN-A-THON
+      </motion.h1>
+
+      {/* Subtitle */}
+      <motion.div
+        animate={{
+          opacity: [0.4, 1, 0.4],
+        }}
+        transition={{
+          repeat: Infinity,
+          duration: 1.5,
+        }}
+        style={{
+          marginTop: "20px",
+          color: "#8FFFD1",
+          letterSpacing: "0.35em",
+          fontSize: "0.9rem",
+          zIndex: 10,
+        }}
+      >
+        INITIALIZING CREATIVE UNIVERSE
+      </motion.div>
+
+      {/* Progress Bar */}
+      <div
+        style={{
+          width: "320px",
+          height: "3px",
+          marginTop: "40px",
+          background: "rgba(255,255,255,0.08)",
+          overflow: "hidden",
+          zIndex: 10,
+        }}
+      >
+        <motion.div
+          animate={{
+            width: `${progress}%`,
+          }}
+          style={{
+            height: "100%",
+            background: "#4ADE80",
+            boxShadow:
+              "0 0 10px #4ADE80, 0 0 20px #4ADE80",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+  return (
+<motion.div
+  initial={{
+    opacity: 0,
+    y: 20,
+  }}
+  animate={{
+    opacity: 1,
+    y: 0,
+  }}
+  transition={{
+    duration: 0.8,
+    delay: 0.2,
+  }}
+>
+
+      <style>
+{`
+.comet-particle{
+  position:fixed;
+  width:8px;
+  height:8px;
+  border-radius:9999px;
+  pointer-events:none;
+  z-index:99999;
+
+  background:#4ADE80;
+
+  box-shadow:
+    0 0 10px #4ADE80,
+    0 0 20px #22C55E,
+    0 0 35px #14B8A6;
+
+  animation: cometFade .8s linear forwards;
+}
+
+@keyframes cometFade{
+  from{
+    opacity:1;
+    transform:scale(1);
+  }
+
+  to{
+    opacity:0;
+    transform:scale(.1);
+  }
+}
+`}
+</style>
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-space-radial" />
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="bg-planet-top-right" />
@@ -471,6 +693,32 @@ export function DesignAThonPage() {
       />
 
       <StarField />
+      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+  {Array.from({ length: 60 }).map((_, i) => (
+    <span
+      key={i}
+      style={{
+        position: "absolute",
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        color: "white",
+        opacity: 0.25 + Math.random() * 0.5,
+        fontSize: `${4 + Math.random() * 6}px`,
+        textShadow: "0 0 8px rgba(255,255,255,0.8)",
+      }}
+    >
+      ✦
+    </span>
+  ))}
+</div>
+<style>
+{`
+@keyframes twinkle{
+  0%,100%{opacity:.2;}
+  50%{opacity:1;}
+}
+`}
+</style>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           SECTION 1 — HERO
@@ -1004,6 +1252,7 @@ export function DesignAThonPage() {
           </div>
         </ScrollReveal>
       </section>
-    </div>
+
+    </motion.div>
   );
 }
