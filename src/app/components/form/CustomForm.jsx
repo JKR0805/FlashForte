@@ -172,10 +172,18 @@ export function CustomForm({
 
       if (allowFileUpload && file) {
         if (file.type.startsWith("image/")) {
-          // Compress images drastically before sending
-          payload.fileBase64 = await compressImageToBase64(file);
-          payload.mimeType = "image/jpeg";
-          payload.fileName = file.name.replace(/\.[^/.]+$/, "") + "_compressed.jpg";
+          try {
+            // Compress images drastically before sending
+            payload.fileBase64 = await compressImageToBase64(file);
+            payload.mimeType = "image/jpeg";
+            payload.fileName = file.name.replace(/\.[^/.]+$/, "") + "_compressed.jpg";
+          } catch (compressErr) {
+            // Fallback to raw base64 if compression fails or exceeds the 10MB safety limit
+            console.warn("Image compression skipped or failed. Falling back to standard upload.", compressErr);
+            payload.fileBase64 = await fileToBase64(file);
+            payload.mimeType = file.type;
+            payload.fileName = file.name;
+          }
         } else {
           payload.fileBase64 = await fileToBase64(file);
           payload.mimeType = file.type;

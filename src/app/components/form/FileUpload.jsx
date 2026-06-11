@@ -34,10 +34,10 @@ export const FileUpload = memo(function FileUpload({ file, setFile, acceptedType
   const handleFileSelect = useCallback((selectedFile) => {
     if (!selectedFile || isSubmitting) return;
     
-    // 25MB limit
-    const MAX_FILE_SIZE = 25 * 1024 * 1024;
+    // 10MB limit
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
     if (selectedFile.size > MAX_FILE_SIZE) {
-      setErrorMsg("File is too large. Maximum allowed file size is 25MB.");
+      setErrorMsg("File is too large. Maximum allowed file size is 10MB.");
       return;
     }
 
@@ -131,8 +131,8 @@ export const FileUpload = memo(function FileUpload({ file, setFile, acceptedType
             : file 
               ? "Click to replace" 
               : (acceptedTypes 
-                  ? `${acceptedTypes.replace(/\./g, '').replace(/,/g, ', ').toUpperCase()} (Max: 25MB)` 
-                  : "Any file type (Max: 25MB)")}
+                  ? `${acceptedTypes.replace(/\./g, '').replace(/,/g, ', ').toUpperCase()} (Max: 10MB)` 
+                  : "Any file type (Max: 10MB)")}
         </span>
       </div>
     </div>
