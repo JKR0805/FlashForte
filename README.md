@@ -31,11 +31,11 @@ Combines entertainment, strategy, and competition. Through interactive challenge
 
 ## Tech Stack
 
-* Next.js
 * React
-* TypeScript
+* JavaScript
 * Tailwind CSS
 * Framer Motion
+* Vite
 * Vercel
 
 ## Getting Started
