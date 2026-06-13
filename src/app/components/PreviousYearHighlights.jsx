@@ -414,7 +414,7 @@ export function PreviousYearHighlights() {
 
                 {/* Winners */}
                 <div>
-                  <h4 className="text-white text-[16px] lg:text-[18px] font-bold mb-3 lg:mb-4">Winners</h4>
+                  <h4 className="text-white text-[16px] lg:text-[18px] font-bold mb-3 lg:mb-4">Previous Year's Winners</h4>
                   <ul className="space-y-3 lg:space-y-4">
                     {activeEvent.winners.map((winner, i) => {
                       const isFirst = i === 0;
