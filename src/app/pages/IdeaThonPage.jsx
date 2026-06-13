@@ -347,6 +347,103 @@ function ClickBurst() {
   );
 }
 
+function GlowCard({ children, className = "", glowColor = "orange" }) {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+  const syncPointer = (e) => {
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      cardRef.current.style.setProperty("--x", x.toFixed(2));
+      cardRef.current.style.setProperty("--y", y.toFixed(2));
+      cardRef.current.style.setProperty("--xp", (x / rect.width).toFixed(2));
+      cardRef.current.style.setProperty("--yp", (y / rect.height).toFixed(2));
+    }
+  };
+  document.addEventListener("pointermove", syncPointer);
+  return () => document.removeEventListener("pointermove", syncPointer);
+}, []);
+
+  const glowColorMap = { orange: { base: 30, spread: 200 } };
+  const { base, spread } = glowColorMap[glowColor];
+
+  const glowStyles = `
+    [data-glow]::before, [data-glow]::after {
+      pointer-events: none; content: ""; position: absolute;
+      inset: calc(var(--border-size) * -1);
+      border: var(--border-size) solid transparent;
+      border-radius: calc(var(--radius) * 1px);
+      background-attachment: fixed;
+      background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
+      background-repeat: no-repeat; background-position: 50% 50%;
+      mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+      mask-clip: padding-box, border-box; mask-composite: intersect;
+    }
+    [data-glow]::before {
+      background-image: radial-gradient(
+        calc(var(--spotlight-size) * 0.75) calc(var(--spotlight-size) * 0.75) at
+        calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+        hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 50) * 1%) / var(--border-spot-opacity, 1)), transparent 100%
+      );
+      filter: brightness(2);
+    }
+    [data-glow]::after {
+      background-image: radial-gradient(
+        calc(var(--spotlight-size) * 0.5) calc(var(--spotlight-size) * 0.5) at
+        calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+        hsl(0 100% 100% / var(--border-light-opacity, 1)), transparent 100%
+      );
+    }
+    [data-glow] [data-glow] {
+      position: absolute; inset: 0; will-change: filter;
+      opacity: var(--outer, 1); border-radius: calc(var(--radius) * 1px);
+      border-width: calc(var(--border-size) * 20);
+      filter: blur(calc(var(--border-size) * 10));
+      background: none; pointer-events: none; border: none;
+    }
+    [data-glow] > [data-glow]::before { inset: -10px; border-width: 10px; }
+  `;
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: glowStyles }} />
+      <div
+        ref={cardRef}
+        data-glow
+        style={{
+          "--base": 40, "--spread": 30,
+          "--radius": "20", "--border": "2",
+          "--backdrop": "rgba(10,12,14,0.95)",
+          "--backup-border": "rgba(245,197,24,0.15)",
+          "--size": "250", "--outer": "1",
+          "--border-size": "calc(var(--border, 2) * 1px)",
+          "--spotlight-size": "calc(var(--size, 150) * 1px)",
+          "--hue": "calc(var(--base) + (var(--xp, 0) * var(--spread, 0)))",
+          backgroundImage: `radial-gradient(
+            var(--spotlight-size) var(--spotlight-size) at
+            calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+            hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 70) * 1%) / 0.12), transparent
+          )`,
+          backgroundColor: "var(--backdrop)",
+          backgroundSize: "calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)))",
+          backgroundPosition: "50% 50%",
+          backgroundAttachment: "fixed",
+          border: "var(--border-size) solid var(--backup-border)",
+          position: "relative",
+          touchAction: "none",
+          flex: 1,
+        }}
+        className={`rounded-2xl relative ${className}`}
+      >
+        <div data-glow />
+        {children}
+      </div>
+    </>
+  );
+}
+
 /* ── RibbonCursor Component ── */
 function RibbonCursor() {
   const canvasRef = useRef(null);
@@ -1342,7 +1439,7 @@ export function IdeaThonPage() {
               </p>
             </FadeSection>
 
-            <FadeSection delay={260}>
+            <FadeSection delay={260} style={{ position: "relative", zIndex: 20 }}>
               <div className="hero-btns" style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
                 <button className="btn-gold">Register Now →</button>
                 <button className="btn-outline">Submit Your Idea</button>
@@ -1370,7 +1467,7 @@ export function IdeaThonPage() {
                 rotateAmplitude={0}
                 scaleOnHover={1}
                 showMobileWarning={false}
-                showTooltip={true}
+                showTooltip={false}
                 captionText="IDEATHON"
                 displayOverlayContent={true}
                 overlayContent={<PortalVideo className="w-full h-full" />}
@@ -1384,7 +1481,7 @@ export function IdeaThonPage() {
         <div style={{
           position: "absolute",
           bottom: 0, left: 0, right: 0,
-          height: "220px",
+          height: "80px",
           background: "linear-gradient(to bottom, transparent, #09090b)",
           pointerEvents: "none",
           zIndex: 10,
@@ -1392,83 +1489,82 @@ export function IdeaThonPage() {
       </section>
 
       {/* ════════════════════════
-    MANIFESTO STRIP
-════════════════════════ */}
-<section style={{ padding: "0 1.5rem 4rem" }}>
-  <FadeSection>
-    <div style={{
-      maxWidth: 1000, margin: "0 auto",
-      position: "relative",
-      background: "radial-gradient(ellipse 80% 100% at 50% 50%, rgba(245,197,24,0.16) 0%, rgba(20,16,6,0.95) 55%, rgba(10,8,4,0.98) 100%)",
-      border: "1px solid rgba(245,197,24,0.35)",
-      borderRadius: "24px",
-      padding: "5rem 3.5rem",
-      minHeight: "320px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
-      overflow: "hidden",
-      boxShadow: "0 0 100px rgba(245,197,24,0.25), 0 0 200px rgba(245,197,24,0.1), inset 0 0 80px rgba(245,197,24,0.06)",
-    }}>
+          MANIFESTO STRIP
+      ════════════════════════ */}
+      <section style={{ padding: "0 1.5rem 3rem" }}>
+        <FadeSection>
+          <div style={{
+            maxWidth: 900, margin: "0 auto",
+            position: "relative",
+            background: "radial-gradient(ellipse 80% 100% at 50% 50%, rgba(245,197,24,0.16) 0%, rgba(20,16,6,0.95) 55%, rgba(10,8,4,0.98) 100%)",
+            border: "1px solid rgba(245,197,24,0.35)",
+            borderRadius: "20px",
+            padding: "3.75rem 3rem",
+            minHeight: "260px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            overflow: "hidden",
+            boxShadow: "0 0 100px rgba(245,197,24,0.25), 0 0 200px rgba(245,197,24,0.1), inset 0 0 80px rgba(245,197,24,0.06)",
+          }}>
 
-      {/* opening quote mark */}
-      <span style={{
-        position: "absolute", top: "1.5rem", left: "2.5rem",
-        fontFamily: "Georgia, serif",
-        fontSize: "8rem", fontWeight: 900,
-        color: "rgba(245,197,24,0.18)",
-        lineHeight: 1, userSelect: "none",
-      }}>&ldquo;</span>
+            {/* opening quote mark */}
+            <span style={{
+              position: "absolute", top: "1.25rem", left: "2rem",
+              fontFamily: "Georgia, serif",
+              fontSize: "6rem", fontWeight: 900,
+              color: "rgba(245,197,24,0.18)",
+              lineHeight: 1, userSelect: "none",
+            }}>&ldquo;</span>
 
-      <p style={{
-        fontFamily: "'Rajdhani', sans-serif",
-        fontSize: "0.75rem",
-        letterSpacing: "0.35em",
-        color: "rgba(245,230,192,0.55)",
-        textTransform: "uppercase",
-        marginBottom: "1.75rem",
-        fontWeight: 700,
-      }}>
-        IdeaThon Manifesto
-      </p>
+            <p style={{
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: "0.7rem",
+              letterSpacing: "0.35em",
+              color: "rgba(245,230,192,0.55)",
+              textTransform: "uppercase",
+              marginBottom: "1.5rem",
+              fontWeight: 700,
+            }}>
+              IdeaThon Manifesto
+            </p>
 
-      <h3 style={{
-        fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
-        fontSize: "clamp(1.4rem, 3.2vw, 2.2rem)",
-        fontWeight: 800,
-        color: "#f5e6c0",
-        lineHeight: 1.55,
-        margin: 0,
-        letterSpacing: "0.01em",
-        maxWidth: 720,
-      }}>
-        Innovation isn't about having every answer.<br />
-        It's about{" "}
-        <span style={{ color: "#f5c518", textShadow: "0 0 20px rgba(245,197,24,0.6)" }}>
-          asking the right questions.
-        </span>
-      </h3>
+            <h3 style={{
+              fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
+              fontSize: "clamp(1.25rem, 2.8vw, 1.9rem)",
+              fontWeight: 800,
+              color: "#f5e6c0",
+              lineHeight: 1.55,
+              margin: 0,
+              letterSpacing: "0.01em",
+              maxWidth: 640,
+            }}>
+              Innovation isn't about having every answer.<br />
+              It's about{" "}
+              <span style={{ color: "#f5c518", textShadow: "0 0 20px rgba(245,197,24,0.6)" }}>
+                asking the right questions.
+              </span>
+            </h3>
 
-      {/* closing quote mark + divider */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        gap: "1rem", marginTop: "2.25rem",
-      }}>
-        <div style={{ width: 60, height: 1, background: "linear-gradient(90deg, transparent, rgba(245,197,24,0.4))" }} />
-        <span style={{
-          fontFamily: "Georgia, serif",
-          fontSize: "1.8rem", fontWeight: 900,
-          color: "#f5c518", lineHeight: 1,
-          textShadow: "0 0 14px rgba(245,197,24,0.6)",
-        }}>&rdquo;</span>
-        <div style={{ width: 60, height: 1, background: "linear-gradient(90deg, rgba(245,197,24,0.4), transparent)" }} />
-      </div>
-    </div>
-  </FadeSection>
-</section>
-
+            {/* closing quote mark + divider */}
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              gap: "0.875rem", marginTop: "1.875rem",
+            }}>
+              <div style={{ width: 52, height: 1, background: "linear-gradient(90deg, transparent, rgba(245,197,24,0.4))" }} />
+              <span style={{
+                fontFamily: "Georgia, serif",
+                fontSize: "1.6rem", fontWeight: 900,
+                color: "#f5c518", lineHeight: 1,
+                textShadow: "0 0 14px rgba(245,197,24,0.6)",
+              }}>&rdquo;</span>
+              <div style={{ width: 52, height: 1, background: "linear-gradient(90deg, rgba(245,197,24,0.4), transparent)" }} />
+            </div>
+          </div>
+        </FadeSection>
+      </section>
         {/* ════════════════════════
             SECTION 2 — ROUNDS
         ════════════════════════ */}
@@ -1482,7 +1578,8 @@ export function IdeaThonPage() {
             <div className="rounds-grid" style={{ display: "flex", gap: "1.5rem", alignItems: "stretch" }}>
 
               <FadeSection style={{ flex: 1 }}>
-                <div className="round-card">
+                <GlowCard>
+                  <div style={{ padding: "2.5rem 2.2rem", height: "100%" }}>
                   <div style={{
                     fontFamily: "'Orbitron', sans-serif", fontSize: "5rem", fontWeight: 900,
                     color: "rgba(245,197,24,0.18)", position: "absolute",
@@ -1502,7 +1599,8 @@ export function IdeaThonPage() {
                     <div style={{ width: 24, height: 1, background: "#f5c518" }} />
                     <span style={{ fontFamily: "'Rajdhani'", fontSize: "0.85rem", letterSpacing: "0.2em", color: "#f5c518", textTransform: "uppercase", fontWeight: 700 }}>Online Submission</span>
                   </div>
-                </div>
+                  </div>
+              </GlowCard>
               </FadeSection>
 
               <div className="rounds-arrow" style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
@@ -1514,7 +1612,8 @@ export function IdeaThonPage() {
               </div>
 
               <FadeSection delay={150} style={{ flex: 1 }}>
-                <div className="round-card">
+                <GlowCard>
+                  <div style={{ padding: "2.5rem 2.2rem", height: "100%" }}>
                   <div style={{
                     fontFamily: "'Orbitron', sans-serif", fontSize: "5rem", fontWeight: 900,
                     color: "rgba(245,197,24,0.18)", position: "absolute",
@@ -1535,6 +1634,7 @@ export function IdeaThonPage() {
                     <span style={{ fontFamily: "'Rajdhani'", fontSize: "0.8rem", letterSpacing: "0.2em", color: "#f5c518", textTransform: "uppercase", fontWeight: 600 }}>Live Judging</span>
                   </div>
                 </div>
+                </GlowCard>
               </FadeSection>
 
             </div>
