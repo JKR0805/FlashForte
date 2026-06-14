@@ -12,6 +12,7 @@ export const SUBMISSION_FIELDS = [
   { name: "name", label: "Full Name", type: "text", required: true, placeholder: "Enter your full name" },
   { name: "email", label: "Email Address", type: "email", required: true, placeholder: "you@example.com" },
   { name: "phone", label: "Phone Number", type: "text", required: true, placeholder: "Enter your phone number", pattern: "^[0-9]{10}$" },
+  { name: "rollNo", label: "Roll Number", type: "text", required: true, placeholder: "Enter your roll number", pattern: "^25071[aA][0-9]{2}[a-zA-Z0-9][0-9]$" },
 ];
 
 export const FEEDBACK_FIELDS = [
