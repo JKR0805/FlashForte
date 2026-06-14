@@ -1,7 +1,7 @@
 import { REGISTRATION_FIELDS, SUBMISSION_FIELDS, FEEDBACK_FIELDS } from "./commonFields.js";
 
-const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbztzUKFGYsPBoYMux7686qC9vCw-XIQUxNMXpfhJU0dCa6xyvlD0iwSDwrvZmSnmzcZ/exec";
-const APP_SCRIPT_SUBMIT = "https://script.google.com/macros/s/AKfycbxuvJYLCRHeXTU67PpJM_8sdCdTt6Rk5mRoMtOK5KOtD53psvluI2zhetOW9u6tBDIyag/exec";
+const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbzfbIYA1v9AqX72wakbggFXr_h7CdsmBy2CP86AkQgorBfwP6BWQ7QkJgoAvn1X2rtM/exec";
+const APP_SCRIPT_SUBMIT = "https://script.google.com/macros/s/AKfycby92JV7yHOHVy3BG1OFC23MMNtSrCyFB4x9tHLIUFo_F2EOodJrND3FX7xUl1qV-kbqiQ/exec";
 const APP_SCRIPT_FEEDBACK = "URL_PLACEHOLDER_IDEATHON_FEEDBACK";
 
 const IS_ACCEPTING = true;
@@ -23,29 +23,7 @@ export const ideathonConfig = {
     successSubtitle: "Your innovation journey begins.",
     allowFileUpload: false,
     fields: [
-      ...REGISTRATION_FIELDS.filter(
-        (field) => field.name !== "heardAboutUs"
-      ),
-      {
-        name: "domain",
-        label: "Select Domain",
-        type: "select",
-        required: true,
-        options: [
-          "Sustainability & Environment",
-          "Smart Logistics Solutions",
-          "Digital Governance",
-          "Disaster Management",
-          "Gaming for Impact",
-          "Digital Trust & Integrity"
-        ]
-      },
-      {
-        name: "heardAboutUs", 
-        label: "How did you hear about us?", 
-        type: "select", required: false, 
-        options: ["Social Media", "Friend", "Senior", "Other"] 
-      }
+      ...REGISTRATION_FIELDS,
     ],
     isAccepting: IS_ACCEPTING,
     showOtherEventsOnSuccess: true,
@@ -63,7 +41,18 @@ export const ideathonConfig = {
     acceptedTypes: ".pdf,.ppt,.pptx",
     acceptedMimeTypes: ["application/pdf", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation"],
     fields: [
-      ...SUBMISSION_FIELDS,
+      ...SUBMISSION_FIELDS.filter(
+        field => field.name !== "email" && field.name !== "phone"
+      ),
+
+      {
+        name: "rollNo",
+        label: "Roll Number",
+        type: "text",
+        required: true,
+        placeholder: "Enter your roll number"
+      },
+
       {
         name: "domain",
         label: "Select Domain",
@@ -77,7 +66,7 @@ export const ideathonConfig = {
           "Gaming for Impact",
           "Digital Trust & Integrity"
         ]
-      }
+      },
     ],
     isAccepting: IS_ACCEPTING,
   },
