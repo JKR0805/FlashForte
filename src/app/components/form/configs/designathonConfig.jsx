@@ -1,7 +1,7 @@
 import { REGISTRATION_FIELDS, SUBMISSION_FIELDS, FEEDBACK_FIELDS } from "./commonFields.js";
 
-const APP_SCRIPT_REGISTER = "URL_PLACEHOLDER_DESIGNATHON_REGISTER";
-const APP_SCRIPT_SUBMIT = "URL_PLACEHOLDER_DESIGNATHON_SUBMIT";
+const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbyQzqL2dVc5IrtM7UCFzrVy2gMOBVX68e1lpQVk_5QW53yERAvhObQetGYDiHTmhRAU/exec";
+const APP_SCRIPT_SUBMIT = "https://script.google.com/macros/s/AKfycbxVb2MJMOpjQ-Cc_y7h2CK1dE0U39bCQk9El7xgKap_Eoo9T2y0LUPdrJmmWTvtN6A/exec";
 const APP_SCRIPT_FEEDBACK = "URL_PLACEHOLDER_DESIGNATHON_FEEDBACK";
 
 const IS_ACCEPTING = true;
@@ -31,13 +31,7 @@ export const designathonConfig = {
     allowFileUpload: false,
     fields: [
       ...REGISTRATION_FIELDS,
-      {
-        name: "domain",
-        label: "Select Domain",
-        type: "select",
-        required: true,
-        options: ["Domain 1", "Domain 2", "Domain 3", "Domain 4", "Domain 5"]
-      }
+      
     ],
     isAccepting: IS_ACCEPTING,
     showOtherEventsOnSuccess: true,
