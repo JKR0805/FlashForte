@@ -5,6 +5,7 @@ import {
   ChevronRight,
   LayoutGrid,
   Palette,
+  Paintbrush,
   Box,
   Trophy,
   Layers,
@@ -12,7 +13,7 @@ import {
   Wand2,
   Monitor,
   Sparkles,
-  Zap
+  Zap,
 } from "lucide-react";
 import { CursorTrail } from "../components/CursorTrail.jsx";
 import { UniversalLoader } from "../components/UniversalLoader.jsx";
@@ -443,6 +444,21 @@ export function DesignAThonPage() {
 
   return (
     <div className="relative w-full max-w-[100vw] overflow-x-hidden flex flex-col font-inter bg-[#050816]">
+      <div className="fixed inset-0 pointer-events-none z-0">
+  {[...Array(60)].map((_, i) => (
+    <div
+      key={i}
+      className="absolute bg-white rounded-full"
+      style={{
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        width: "2px",
+        height: "2px",
+        opacity: 0.8,
+      }}
+    />
+  ))}
+</div>
       <CursorTrail colorRgb={[34, 197, 94]} />
       {loading && (
         <UniversalLoader
@@ -630,25 +646,26 @@ export function DesignAThonPage() {
               {/* Submission CTA */}
               <Link
                 to="/design-a-thon/submit"
-                className="flex items-center justify-center gap-1.5 px-7 py-3 rounded-[50px] text-[#F8FAFC] text-[clamp(13px,1.6vw,15px)] font-bold tracking-[0.02em] cursor-pointer no-underline transition-all hover:-translate-y-1"
+               className="flex items-center justify-center gap-2 px-7 py-3 rounded-[50px] text-[#0B1120] text-[clamp(13px,1.6vw,15px)] font-bold tracking-[0.02em] cursor-pointer no-underline transition-transform hover:-translate-y-1"
                 style={{
-                  border: "1px solid rgba(34,197,94,0.4)",
-                  background: "rgba(34,197,94,0.06)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
+                  background: "linear-gradient(135deg, #22C55E 0%, #4ADE80 50%, #14B8A6 100%)",
+                  boxShadow: "0 4px 30px rgba(34,197,94,0.4), 0 0 60px rgba(34,197,94,0.15)",
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(34,197,94,0.8)";
-                  e.currentTarget.style.background = "rgba(34,197,94,0.15)";
-                  e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.2)";
+               onMouseEnter={(e) => {
+                     e.currentTarget.style.transform = "translateY(-4px)";
+                      e.currentTarget.style.boxShadow =
+                     "0 8px 40px rgba(34,197,94,0.6)";
                 }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(34,197,94,0.4)";
-                  e.currentTarget.style.background = "rgba(34,197,94,0.06)";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
+
+               onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.background =
+                    "linear-gradient(135deg, #22C55E 0%, #4ADE80 50%, #14B8A6 100%)";
+                    e.currentTarget.style.boxShadow =
+                    "0 4px 30px rgba(34,197,94,0.4), 0 0 60px rgba(34,197,94,0.15)";
+                   }}
               >
-                Submit Design
+               <Paintbrush size={14} /> Submit Design
               </Link>
 
             </motion.div>
