@@ -114,11 +114,12 @@ const highlightData = [
   }
 ];
 
-function MobileImageGallery({ activeEvent, onImageClick }) {
+function MobileImageGallery({ activeEvent, onImageClick, onInteract }) {
   const carouselRef = useRef(null);
   const [activeImgIndex, setActiveImgIndex] = useState(0);
 
   const handleScroll = () => {
+    if (onInteract) onInteract();
     if (!carouselRef.current) return;
     const container = carouselRef.current;
     const scrollCenter = container.scrollLeft + container.clientWidth / 2;
@@ -141,6 +142,8 @@ function MobileImageGallery({ activeEvent, onImageClick }) {
       <div 
         ref={carouselRef}
         onScroll={handleScroll}
+        onTouchStart={onInteract}
+        onMouseDown={onInteract}
         className="flex gap-4 overflow-x-auto hide-scrollbar snap-x snap-mandatory py-4"
         style={{
           paddingLeft: "calc(50% - 100px)",
@@ -223,6 +226,7 @@ export function PreviousYearHighlights() {
 
   const handleNavScroll = () => {
     if (!navCarouselRef.current || !isMobile || programmaticScroll.current) return;
+    setIsAutoPlaying(false);
     const container = navCarouselRef.current;
     const scrollCenter = container.scrollLeft + container.clientWidth / 2;
     let closestIndex = 0;
@@ -280,6 +284,8 @@ export function PreviousYearHighlights() {
           <div 
             ref={navCarouselRef}
             onScroll={handleNavScroll}
+            onTouchStart={() => setIsAutoPlaying(false)}
+            onMouseDown={() => setIsAutoPlaying(false)}
             className={`flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 hide-scrollbar perspective-1000 ${isMobile ? "snap-x snap-mandatory" : ""}`}
             style={{
                paddingLeft: isMobile ? "calc(50% - 120px)" : undefined,
@@ -367,13 +373,20 @@ export function PreviousYearHighlights() {
 
               {/* Image Gallery Placeholders */}
               {isMobile ? (
-                <MobileImageGallery activeEvent={activeEvent} onImageClick={setZoomedImage} />
+                <MobileImageGallery 
+                  activeEvent={activeEvent} 
+                  onImageClick={setZoomedImage} 
+                  onInteract={() => setIsAutoPlaying(false)}
+                />
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
                   {(activeEvent.images.length > 0 ? activeEvent.images : [null, null, null]).map((img, i) => (
                     <div 
                       key={i} 
-                      onClick={() => setZoomedImage({ event: activeEvent, index: i })}
+                      onClick={() => {
+                        setZoomedImage({ event: activeEvent, index: i });
+                        setIsAutoPlaying(false);
+                      }}
                       className="aspect-video rounded-xl overflow-hidden relative bg-white/5 border border-white/10 group cursor-pointer"
                     >
                       {img ? (
