@@ -23,7 +23,7 @@ const highlightData = [
   {
     id: "speakathon",
     title: "Speak-A-Thon",
-    year: "2025",
+    year: "2k25",
     navDesc: "Where confidence finds its voice.",
     color: "#22C55E", // Green
     icon: Mic,
@@ -45,7 +45,7 @@ const highlightData = [
   {
     id: "gameathon",
     title: "Game-A-Thon",
-    year: "2025",
+    year: "2k25",
     navDesc: "Where Screens Turn Into Arenas.",
     color: "#A855F7", // Purple
     icon: Gamepad2,
@@ -67,7 +67,7 @@ const highlightData = [
   {
     id: "designathon",
     title: "Design-A-Thon",
-    year: "2025",
+    year: "2k25",
     navDesc: "Design. Create. Elevate.",
     color: "#F97316", // Orange
     icon: Palette,
@@ -89,7 +89,7 @@ const highlightData = [
   {
     id: "ideathon",
     title: "IdeaThon",
-    year: "2025",
+    year: "2k25",
     navDesc: "Think. Ideate. Pitch.",
     color: "#EAB308", // Gold
     icon: Lightbulb,
@@ -359,8 +359,8 @@ export function PreviousYearHighlights() {
               <div className="flex items-start mb-6 lg:mb-8 border-b border-white/10 pb-4 lg:pb-6">
                 <div className="flex items-center gap-3 lg:gap-4">
                   <activeEvent.icon size={isMobile ? 24 : 32} color={activeEvent.color} style={{ filter: `drop-shadow(0 0 10px ${activeEvent.color}80)` }} />
-                  <h3 className="font-orbitron font-black uppercase tracking-[0.05em] text-[16px] sm:text-[24px] lg:text-[28px] text-[#F8FAFC] text-glow">
-                    {activeEvent.title} {activeEvent.year}
+                  <h3 className="font-orbitron font-black tracking-[0.05em] text-[16px] sm:text-[24px] lg:text-[28px] text-[#F8FAFC] text-glow">
+                    <span className="uppercase">{activeEvent.title}</span> <span className="lowercase">{activeEvent.year}</span>
                   </h3>
                 </div>
               </div>
