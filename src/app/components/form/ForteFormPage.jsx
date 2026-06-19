@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { CustomForm } from "./CustomForm.jsx";
 import { Footer } from "../Footer.jsx";
 
@@ -12,6 +13,16 @@ function hexToRgb(hex) {
 }
 
 export function ForteFormPage({ config, themeColor }) {
+  // Force a re-render every minute to re-evaluate time-based getters (like isAccepting)
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTick(t => t + 1);
+    }, 60000); // Check every 60 seconds to preserve battery and performance
+    return () => clearInterval(timer);
+  }, []);
+
   if (!config) {
     return (
       <div className="neon-form-page">
