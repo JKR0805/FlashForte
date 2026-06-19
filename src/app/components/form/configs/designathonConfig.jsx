@@ -4,7 +4,18 @@ const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbyQzqL2dVc5
 const APP_SCRIPT_SUBMIT = "https://script.google.com/macros/s/AKfycbxVb2MJMOpjQ-Cc_y7h2CK1dE0U39bCQk9El7xgKap_Eoo9T2y0LUPdrJmmWTvtN6A/exec";
 const APP_SCRIPT_FEEDBACK = "URL_PLACEHOLDER_DESIGNATHON_FEEDBACK";
 
-const IS_ACCEPTING = true;
+const checkDeadline = (deadlineStr) => {
+  if (!deadlineStr) return true;
+  return new Date() < new Date(deadlineStr);
+};
+
+// Set your deadlines here (ISO format, e.g., "2026-06-25T23:59:59+05:30"). 
+// Leave empty to accept indefinitely.
+const DEADLINES = {
+  register: "2026-06-27T23:59:59+05:30",
+  submit: "2026-06-27T23:59:59+05:30",
+  feedback: ""
+};
 
 const titleNode = () => (
   <span style={{ whiteSpace: "nowrap" }}>
@@ -33,7 +44,7 @@ export const designathonConfig = {
       ...REGISTRATION_FIELDS,
       
     ],
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.register); },
     showOtherEventsOnSuccess: true,
     forteId: "designathon",
   },
@@ -58,7 +69,7 @@ export const designathonConfig = {
         options: ["A World Through Different Eyes", "Mind Over Machine", "Borrowed Earth", "Digital Detox", "Gaming Beyond Entertainment"]
       }
     ],
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.submit); },
   },
   feedback: {
     appScriptUrl: APP_SCRIPT_FEEDBACK,
@@ -69,6 +80,6 @@ export const designathonConfig = {
     successSubtitle: "Thank you for sharing your thoughts.",
     allowFileUpload: false,
     fields: FEEDBACK_FIELDS,
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.feedback); },
   }
 };

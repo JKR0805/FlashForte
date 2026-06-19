@@ -3,7 +3,17 @@ import { REGISTRATION_FIELDS, SUBMISSION_FIELDS, FEEDBACK_FIELDS } from "./commo
 const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbx6SLXjKgKhziuRafm_mC8RNoDRCwFjUy50yQSiT-hsMY34HAUqdId9RbPBLxJY10PI/exec";
 const APP_SCRIPT_FEEDBACK = "URL_PLACEHOLDER_GAMEATHON_FEEDBACK";
 
-const IS_ACCEPTING = true;
+const checkDeadline = (deadlineStr) => {
+  if (!deadlineStr) return true;
+  return new Date() < new Date(deadlineStr);
+};
+
+// Set your deadlines here (ISO format, e.g., "2026-06-25T23:59:59+05:30"). 
+// Leave empty to accept indefinitely.
+const DEADLINES = {
+  register: "2026-06-28T23:59:59+05:30",
+  feedback: ""
+};
 
 const titleNode = () => (
   <span style={{ whiteSpace: "nowrap" }}>
@@ -22,7 +32,7 @@ export const gameathonConfig = {
     successSubtitle: "Player one ready.",
     allowFileUpload: false,
     fields: REGISTRATION_FIELDS,
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.register); },
     showOtherEventsOnSuccess: true,
     forteId: "gameathon",
   },
@@ -35,6 +45,6 @@ export const gameathonConfig = {
     successSubtitle: "Thank you for sharing your thoughts.",
     allowFileUpload: false,
     fields: FEEDBACK_FIELDS,
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.feedback); },
   }
 };

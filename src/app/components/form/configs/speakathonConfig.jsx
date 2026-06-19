@@ -3,7 +3,17 @@ import { REGISTRATION_FIELDS, SUBMISSION_FIELDS, FEEDBACK_FIELDS } from "./commo
 const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbyxzRq8MUpd7vjoBFGuSF3t_jcHC6Tqsl0T-RBcKdUzDIKjZFEdKwexe6omGP4C7DT63A/exec"
 const APP_SCRIPT_FEEDBACK = "URL_PLACEHOLDER_SPEAKATHON_FEEDBACK";
 
-const IS_ACCEPTING = true;
+const checkDeadline = (deadlineStr) => {
+  if (!deadlineStr) return true;
+  return new Date() < new Date(deadlineStr);
+};
+
+// Set your deadlines here (ISO format, e.g., "2026-06-25T23:59:59+05:30"). 
+// Leave empty to accept indefinitely.
+const DEADLINES = {
+  register: "2026-06-28T20:00:00+05:30",
+  feedback: ""
+};
 
 const titleNode = () => (
   <span style={{ whiteSpace: "nowrap" }}>
@@ -28,7 +38,7 @@ export const speakathonConfig = {
     successSubtitle: "Your voice will be heard.",
     allowFileUpload: false,
     fields: REGISTRATION_FIELDS,
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.register); },
     showOtherEventsOnSuccess: true,
     forteId: "speakathon",
   },
@@ -42,6 +52,6 @@ export const speakathonConfig = {
     successSubtitle: "Thank you for sharing your thoughts.",
     allowFileUpload: false,
     fields: FEEDBACK_FIELDS,
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.feedback); },
   }
 };

@@ -4,7 +4,18 @@ const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbzfbIYA1v9A
 const APP_SCRIPT_SUBMIT = "https://script.google.com/macros/s/AKfycby92JV7yHOHVy3BG1OFC23MMNtSrCyFB4x9tHLIUFo_F2EOodJrND3FX7xUl1qV-kbqiQ/exec";
 const APP_SCRIPT_FEEDBACK = "URL_PLACEHOLDER_IDEATHON_FEEDBACK";
 
-const IS_ACCEPTING = true;
+const checkDeadline = (deadlineStr) => {
+  if (!deadlineStr) return true;
+  return new Date() < new Date(deadlineStr);
+};
+
+// Set your deadlines here (ISO format, e.g., "2026-06-25T23:59:59+05:30"). 
+// Leave empty to accept indefinitely.
+const DEADLINES = {
+  register: "2026-06-26T23:59:59+05:30",
+  submit: "2026-06-27T17:00:00+05:30",
+  feedback: ""
+};
 
 const titleNode = () => (
   <span style={{ whiteSpace: "nowrap" }}>
@@ -25,7 +36,7 @@ export const ideathonConfig = {
     fields: [
       ...REGISTRATION_FIELDS,
     ],
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.register); },
     showOtherEventsOnSuccess: true,
     forteId: "ideathon",
   },
@@ -60,7 +71,7 @@ export const ideathonConfig = {
         ]
       },
     ],
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.submit); },
   },
   feedback: {
     appScriptUrl: APP_SCRIPT_FEEDBACK,
@@ -71,6 +82,6 @@ export const ideathonConfig = {
     successSubtitle: "Thank you for sharing your thoughts.",
     allowFileUpload: false,
     fields: FEEDBACK_FIELDS,
-    isAccepting: IS_ACCEPTING,
+    get isAccepting() { return checkDeadline(DEADLINES.feedback); },
   }
 };
