@@ -727,7 +727,7 @@ export function IdeaThonPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginTop: "1.2rem" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Rajdhani', sans-serif", fontSize: "0.78rem", fontWeight: 700, color: "#f5c518", letterSpacing: "0.12em", textTransform: "uppercase" }}>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f5c518" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              Deadline: 27 June 2026, 5:00 PM
+              Deadline: 27 June 2026, 11:59 PM
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Rajdhani', sans-serif", fontSize: "0.78rem", fontWeight: 700, color: "rgba(245,197,24,0.6)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
               <span style={{ width: "1.8rem", height: "1.5px", background: "rgba(245,197,24,0.6)", display: "inline-block" }} />
