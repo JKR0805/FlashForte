@@ -2,7 +2,7 @@ import { REGISTRATION_FIELDS, SUBMISSION_FIELDS, FEEDBACK_FIELDS } from "./commo
 
 const APP_SCRIPT_REGISTER = "https://script.google.com/macros/s/AKfycbzfbIYA1v9AqX72wakbggFXr_h7CdsmBy2CP86AkQgorBfwP6BWQ7QkJgoAvn1X2rtM/exec";
 const APP_SCRIPT_SUBMIT = "https://script.google.com/macros/s/AKfycby92JV7yHOHVy3BG1OFC23MMNtSrCyFB4x9tHLIUFo_F2EOodJrND3FX7xUl1qV-kbqiQ/exec";
-const APP_SCRIPT_FEEDBACK = "URL_PLACEHOLDER_IDEATHON_FEEDBACK";
+const APP_SCRIPT_FEEDBACK = "https://script.google.com/macros/s/AKfycbyCoTqy0tPeQbKETQNtEUFAjg5dsr-nNIXtCr_oW1TvZcJLky_zL1TisXhTmZEyEaxf/exec";
 
 const checkDeadline = (deadlineStr) => {
   if (!deadlineStr) return true;
@@ -159,7 +159,7 @@ export const ideathonConfig = {
         name: "improvements",
         label: "7. What improvements would you suggest for future ideathons?",
         type: "textarea",
-        required: false,
+        required: true,
         placeholder: "Share any suggestions regarding event structure, judging, timelines, communication, platform, etc."
       },
       {
@@ -189,7 +189,6 @@ export const ideathonConfig = {
         required: true,
         options: [
           "Yes",
-          "Maybe",
           "No"
         ]
       },
@@ -201,7 +200,6 @@ export const ideathonConfig = {
         description: "CSI members get exclusive access to: Industry exposure, Technical workshops, Hackathons, Mentorship and guidance, Leadership and volunteering opportunities, Event organizing experience, Networking with peers and professionals.\n\nWould you be interested in joining CSI?",
         options: [
           "Yes",
-          "Maybe",
           "No"
         ]
       },
