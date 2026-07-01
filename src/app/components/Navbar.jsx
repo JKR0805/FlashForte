@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import vnrLogo from "../../images/vnrlogo.webp";
 import csiLogo from "../../images/csilogo.webp";
+import { WinnersPopup } from "./WinnersPopup.jsx";
 
 /* ═══════════════════════════════════════════════════════════
    Phase 3: Navbar Dropdown — T=1.8s
@@ -107,36 +108,7 @@ export function Navbar() {
 
         {/* Right actions */}
         <div className="flex items-center gap-2 md:gap-4">
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => {
-                setIsRegisterOpen(!isRegisterOpen);
-                if (!isRegisterOpen) setIsMobileMenuOpen(false);
-              }}
-              className="flex items-center gap-1 font-semibold rounded-full px-4 py-2 text-sm btn-outline-glow cursor-pointer border-none bg-transparent"
-              style={{ border: "1px solid rgba(255, 255, 255, 0.15)" }}
-            >
-              Register <ChevronDown size={14} className={`transition-transform duration-300 ${isRegisterOpen ? "rotate-180" : ""}`} />
-            </button>
-            
-            <AnimatePresence>
-              {isRegisterOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 top-full mt-2 w-48 py-2 rounded-xl border border-white/10 overflow-hidden shadow-2xl flex flex-col"
-                  style={{ background: "linear-gradient(135deg, rgba(15,15,20,0.95), rgba(10,10,15,0.98))", backdropFilter: "blur(16px)" }}
-                >
-                  <Link to="/speak-a-thon/register" className="px-4 py-2.5 text-[13px] font-semibold text-white/70 hover:text-[#22C55E] hover:bg-white/5 transition-colors no-underline">Speak-A-Thon</Link>
-                  <Link to="/game-a-thon/register" className="px-4 py-2.5 text-[13px] font-semibold text-white/70 hover:text-[#A855F7] hover:bg-white/5 transition-colors no-underline">Game-A-Thon</Link>
-                  <Link to="/design-a-thon/register" className="px-4 py-2.5 text-[13px] font-semibold text-white/70 hover:text-[#F97316] hover:bg-white/5 transition-colors no-underline">Design-A-Thon</Link>
-                  <Link to="/ideathon/register" className="px-4 py-2.5 text-[13px] font-semibold text-white/70 hover:text-[#EAB308] hover:bg-white/5 transition-colors no-underline">Ideathon</Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          <WinnersPopup />
           
           {/* Hamburger Menu Toggle */}
           <div 
