@@ -183,7 +183,7 @@ export function WinnersPopup() {
             className="relative z-[90] flex items-center justify-center"
           >
             {/* Pulsing attention ring */}
-            <div className="absolute inset-0 rounded-full bg-[#06B6D4]/20 animate-ping" style={{ animationDuration: '3s' }} />
+            <div className="absolute inset-0 rounded-full bg-[#06B6D4]/20 animate-ping pointer-events-none" style={{ animationDuration: '3s' }} />
             
             <motion.button
               onClick={() => setIsOpen(true)}
